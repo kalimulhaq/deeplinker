@@ -45,7 +45,9 @@ async function open(page: Page) {
     document.addEventListener("securitypolicyviolation", (e) =>
       seen.push(
         `${e.violatedDirective}: ${e.blockedURI || "inline"} at ${e.sourceFile || "?"}:${e.lineNumber}` +
-          (e.sample ? ` "${e.sample}"` : ""),
+          (e.sample ? ` "${e.sample}"` : "") +
+          // For an inline attribute the event is fired at the element that carries it.
+          (e.target instanceof Element ? ` on ${e.target.outerHTML.slice(0, 120)}` : ""),
       ),
     );
   });
