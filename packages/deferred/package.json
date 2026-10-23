@@ -1,0 +1,22 @@
+{
+  "name": "@deeplinker/deferred",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "sideEffects": false,
+  "description": "Deferred deep linking: one request handler (Web Request -> Response), storage adapters, and the endpoint templates build writes.",
+  "exports": {
+    ".": "./src/index.ts",
+    "./templates": "./src/templates.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@deeplinker/core": "workspace:*"
+  },
+  "devDependencies": {
+    "yaml": "^2.8.0"
+  }
+}

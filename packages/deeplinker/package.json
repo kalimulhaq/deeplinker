@@ -1,0 +1,80 @@
+{
+  "name": "@kalimulhaq/deeplinker",
+  "version": "0.1.0",
+  "description": "Turn any page on your site into a deep link: it opens your app, sends people to the right app store, falls back to a web app, or stays put.",
+  "keywords": [
+    "deep-link",
+    "deep-linking",
+    "universal-links",
+    "app-links",
+    "apple-app-site-association",
+    "assetlinks",
+    "smart-app-banner",
+    "deferred-deep-linking"
+  ],
+  "license": "MIT",
+  "type": "module",
+  "homepage": "https://github.com/kalimulhaq/deeplinker#readme",
+  "bugs": "https://github.com/kalimulhaq/deeplinker/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kalimulhaq/deeplinker.git",
+    "directory": "packages/deeplinker"
+  },
+  "bin": {
+    "deeplinker": "./bin/deeplinker.js"
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./runtime": {
+      "types": "./dist/runtime/index.d.ts",
+      "import": "./dist/runtime/deeplinker.esm.js"
+    },
+    "./runtime/umd": "./dist/runtime/deeplinker.umd.js",
+    "./deferred": {
+      "types": "./dist/deferred.d.ts",
+      "import": "./dist/deferred.js"
+    },
+    "./openapi.yaml": "./dist/openapi.yaml",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "bin",
+    "README.md",
+    "LICENSE"
+  ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=18"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\" && tsup && node scripts/prepare-package.mjs",
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@clack/prompts": "^1.8.1",
+    "commander": "^15.0.0",
+    "diff": "^9.0.0",
+    "jiti": "^2.7.0",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@deeplinker/cli": "workspace:*",
+    "@deeplinker/core": "workspace:*",
+    "@deeplinker/generator": "workspace:*",
+    "@deeplinker/runtime": "workspace:*",
+    "@deeplinker/deferred": "workspace:*"
+  }
+}

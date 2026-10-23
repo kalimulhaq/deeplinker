@@ -1,0 +1,498 @@
+import type { HostId } from "@deeplinker/core";
+import type { Settings } from "./types";
+
+export type Storage = "memory" | "sqlite" | "postgres" | "redis" | "kv";
+export type Kind = "cloudflare" | "vercel" | "netlify" | "node" | "php";
+
+export interface DeferredFile {
+  /** Relative to the output directory: `deferred/<kind>/…` mirrors the project layout it is meant to be copied into. */
+  path: string;
+  content: string;
+  description: string;
+  destination: string;
+}
+
+export interface DeferredOutput {
+  kind: Kind;
+  storage: Storage;
+  files: DeferredFile[];
+  /** What to do, in plain language. */
+  steps: string[];
+  /** npm (or composer) packages the endpoint needs. */
+  dependencies: string[];
+  /** Environment variables or bindings it reads. */
+  env: string[];
+  warnings: string[];
+}
+
+export interface DeferredInput {
+  host: HostId;
+  /** Unset means the default for the host. */
+  storage?: Storage;
+  settings: Settings & { basePath: string };
+}
+
+/** Which kind of endpoint suits a hosting choice. PHP hosts get PHP; the rest get a JavaScript function or server. */
+export function kindOf(host: HostId): Kind {
+  switch (host) {
+    case "cloudflare":
+      return "cloudflare";
+    case "vercel":
+      return "vercel";
+    case "netlify":
+      return "netlify";
+    case "apache":
+    case "laravel":
+    case "wordpress":
+      return "php";
+    default:
+      return "node";
+  }
+}
+
+const SUPPORTED: Record<Kind, Storage[]> = {
+  cloudflare: ["kv", "memory"],
+  vercel: ["redis", "postgres", "memory"],
+  netlify: ["redis", "postgres", "memory"],
+  node: ["sqlite", "postgres", "redis", "memory"],
+  php: ["sqlite"],
+};
+
+export const defaultStorage = (kind: Kind): Storage => SUPPORTED[kind][0] as Storage;
+
+/** A reason this storage cannot work with this kind of endpoint, or null. */
+export function storageProblem(kind: Kind, storage: Storage): string | null {
+  if (SUPPORTED[kind].includes(storage)) return null;
+  return `deferred.storage "${storage}" does not work with the ${kind} endpoint (it supports: ${SUPPORTED[kind].join(", ")}).`;
+}
+
+const json = (value: unknown) => JSON.stringify(value, null, 2);
+
+interface StoreCode {
+  imports: string[];
+  /** Lines that create `store`. They may `await`. */
+  setup: string[];
+  dependencies: string[];
+  env: string[];
+}
+
+const STORES: Record<Exclude<Storage, "kv">, StoreCode> = {
+  memory: { imports: [], setup: ["const store = memoryStore();"], dependencies: [], env: [] },
+  sqlite: {
+    imports: ['import Database from "better-sqlite3";'],
+    setup: ['const store = sqliteStore(new Database(process.env.DEEPLINKER_DB ?? "deeplinker.db"));'],
+    dependencies: ["better-sqlite3"],
+    env: ["DEEPLINKER_DB (optional: path of the database file)"],
+  },
+  postgres: {
+    imports: ['import pg from "pg";'],
+    setup: [
+      "const store = postgresStore(new pg.Pool({ connectionString: process.env.DATABASE_URL }));",
+      "await store.init();",
+    ],
+    dependencies: ["pg"],
+    env: ["DATABASE_URL"],
+  },
+  redis: {
+    imports: ['import { createClient } from "redis";'],
+    setup: [
+      "const client = createClient({ url: process.env.REDIS_URL });",
+      "await client.connect();",
+      "const store = redisStore({",
+      "  hset: (key, field, value) => client.hSet(key, field, value),",
+      "  hgetall: (key) => client.hGetAll(key),",
+      "  hdel: (key, field) => client.hDel(key, field),",
+      "  expire: (key, seconds) => client.expire(key, seconds),",
+      "});",
+    ],
+    dependencies: ["redis"],
+    env: ["REDIS_URL"],
+  },
+};
+
+const FACTORY: Record<Exclude<Storage, "kv">, string> = {
+  memory: "memoryStore",
+  sqlite: "sqliteStore",
+  postgres: "postgresStore",
+  redis: "redisStore",
+};
+
+const settingsOf = (s: DeferredInput["settings"]) =>
+  json({ hosts: s.hosts, ttlSeconds: s.ttlSeconds, clipboard: s.clipboard });
+const KIT = '"@kalimulhaq/deeplinker/deferred"';
+
+/** The files and steps for one host. A storage that does not fit the host is reported in `warnings` and not rendered. */
+export function renderDeferred(input: DeferredInput): DeferredOutput {
+  const kind = kindOf(input.host);
+  const storage = input.storage ?? defaultStorage(kind);
+  const base = input.settings.basePath.replace(/\/+$/, "");
+  const out: DeferredOutput = {
+    kind,
+    storage,
+    files: [],
+    steps: [],
+    dependencies: ["@kalimulhaq/deeplinker"],
+    env: [],
+    warnings: [],
+  };
+
+  const problem = storageProblem(kind, storage);
+  if (problem) {
+    out.warnings.push(problem);
+    return out;
+  }
+  if (storage === "memory" && kind !== "node") {
+    out.warnings.push(
+      `deferred.storage "memory" keeps clicks in one process, and ${kind === "php" ? "PHP" : "serverless functions"} do not share memory between requests, so nothing would ever match. Use it only to try the endpoint.`,
+    );
+  }
+
+  const dir = `deferred/${kind}`;
+  const settings = settingsOf(input.settings);
+  const header =
+    "// Generated by `deeplinker build`. Deferred deep linking endpoint: POST …/click and POST …/match.";
+
+  if (kind === "php") {
+    // WordPress and Laravel answer the two paths themselves and `require` the endpoint, so it must not sit in a folder
+    // the web server serves (or, for WordPress, where must-use plugins are loaded from: only top-level files are).
+    const place =
+      input.host === "wordpress"
+        ? {
+            to: "`wp-content/mu-plugins/deeplinker/dl.php`",
+            step:
+              "Copy `deferred/php/dl.php` to `wp-content/mu-plugins/deeplinker/dl.php` (create the `deeplinker` folder). The generated must-use plugin answers `" +
+              base +
+              "/click` and `" +
+              base +
+              "/match` with it.",
+          }
+        : input.host === "laravel"
+          ? {
+              to: "`deeplinker/dl.php` in your Laravel project (not in `public/`)",
+              step:
+                "Copy `deferred/php/dl.php` to `deeplinker/dl.php` in the project root, outside `public/`. The generated `routes/deeplinker.php` answers `" +
+                base +
+                "/click` and `" +
+                base +
+                "/match` with it.",
+            }
+          : {
+              to: "your web root, as dl.php",
+              step: `Copy \`deferred/php/dl.php\` to the web root. The generated \`.htaccess\` sends \`${base}/click\` and \`${base}/match\` to it; on any other server, send those two paths to \`dl.php\`.`,
+            };
+    out.files.push({
+      path: `${dir}/dl.php`,
+      content: phpEndpoint(input.settings),
+      description: "Deferred deep linking endpoint (PHP, SQLite)",
+      destination: place.to,
+    });
+    out.dependencies = [];
+    out.env = [
+      "DEEPLINKER_DB (optional: path of the SQLite file; by default it is a file in the system temp folder)",
+      "DEEPLINKER_TRUST_PROXY=1 (if you are behind Cloudflare or a proxy that sets the client address)",
+    ];
+    out.steps.push(
+      "PHP needs the `pdo_sqlite` extension, which almost every host has.",
+      place.step,
+      "The SQLite file is created on first use and holds only short-lived clicks. To keep it somewhere else, set `DEEPLINKER_DB` to a path that PHP can write and the web server does not serve.",
+    );
+    return out;
+  }
+
+  const store = storage === "kv" ? null : STORES[storage];
+  if (store) {
+    out.dependencies.push(...store.dependencies);
+    out.env.push(...store.env);
+  }
+  const factory = storage === "kv" ? "kvStore" : FACTORY[storage];
+  const imports = (extra: string[]) => [...(store?.imports ?? []), ...extra].join("\n");
+
+  switch (kind) {
+    case "cloudflare": {
+      out.env.push("DEEPLINKER_KV (a KV namespace binding)");
+      const storeLine = storage === "kv" ? "kvStore(env.DEEPLINKER_KV)" : "memoryStore()";
+      out.files.push({
+        path: `${dir}/functions/dl/[[route]].js`,
+        content: `${header}\nimport { createHandler, ${factory} } from ${KIT};\n\nconst settings = ${settings};\n\nexport async function onRequest({ request, env }) {\n  const handle = createHandler({\n    settings,\n    store: ${storeLine},\n    ip: (r) => r.headers.get("cf-connecting-ip"),\n  });\n  return handle(request);\n}\n`,
+        description: "Deferred deep linking endpoint (Cloudflare Pages Function, KV)",
+        destination: "`functions/dl/[[route]].js` in your Pages project",
+      });
+      out.steps.push(
+        "Copy `deferred/cloudflare/functions/` into your Pages project.",
+        "Create a KV namespace and bind it to the project as `DEEPLINKER_KV` (Pages → Settings → Functions → KV namespace bindings, or `kv_namespaces` in wrangler.toml).",
+        "The generated `_routes.json` already sends the deferred paths to Functions.",
+      );
+      break;
+    }
+    case "vercel": {
+      // Vercel's docs: a function in `api/` is a Web handler (`export function POST(request)`); without a framework it
+      // is plain ESM, which needs `.mjs` (or "type": "module"), so the files are `.mjs`. The shared handler is kept
+      // out of `api/`, where every file becomes a function. `ipAddress` is Vercel's documented way to read the client.
+      out.dependencies.push("@vercel/functions");
+      const shared = `${header}\n${imports([`import { createHandler, ${factory} } from ${KIT};`, 'import { ipAddress } from "@vercel/functions";'])}\n\nconst settings = ${settings};\n\n${store?.setup.join("\n") ?? ""}\n\nexport const handle = createHandler({\n  settings,\n  store,\n  ip: (request) => ipAddress(request),\n});\n`;
+      const route = (name: string) =>
+        `${header}\nimport { handle } from "../../lib/deeplinker.mjs";\n\nexport const POST = (request) => handle(request);\nexport const GET = POST; // answered with 405\n// ${name}\n`;
+      out.files.push(
+        {
+          path: `${dir}/lib/deeplinker.mjs`,
+          content: shared,
+          description: "Deferred deep linking handler (Vercel)",
+          destination: "`lib/deeplinker.mjs`",
+        },
+        {
+          path: `${dir}/api/dl/click.mjs`,
+          content: route("click"),
+          description: "Deferred deep linking: click (Vercel function)",
+          destination: "`api/dl/click.mjs`",
+        },
+        {
+          path: `${dir}/api/dl/match.mjs`,
+          content: route("match"),
+          description: "Deferred deep linking: match (Vercel function)",
+          destination: "`api/dl/match.mjs`",
+        },
+      );
+      out.steps.push(
+        "Copy `deferred/vercel/api/` into your project's `api/` folder and `deferred/vercel/lib/` next to it.",
+        `The generated \`vercel.json\` rewrites \`${base}/click\` and \`${base}/match\` to those functions.`,
+        "A framework that owns its own routes (Next.js) may not serve a root-level `api/` folder: there, put the same two handlers in its route files (for Next.js, `app/api/dl/click/route.js` and `app/api/dl/match/route.js`, each re-exporting `POST` from `lib/deeplinker.mjs`) and keep the rewrites.",
+        storage === "redis"
+          ? "Add a Redis database (for example Upstash through the Vercel marketplace) and set `REDIS_URL`."
+          : "Add a Postgres database and set `DATABASE_URL`.",
+      );
+      break;
+    }
+    case "netlify": {
+      // `context.ip` is Netlify's documented client address; the handler is built per request so it can use it.
+      out.files.push({
+        path: `${dir}/netlify/functions/dl.mjs`,
+        content: `${header}\n${imports([`import { createHandler, ${factory} } from ${KIT};`])}\n\nconst settings = ${settings};\n\n${store?.setup.join("\n") ?? ""}\n\nexport default (request, context) => createHandler({ settings, store, ip: () => context.ip })(request);\n\nexport const config = { path: [${JSON.stringify(`${base}/click`)}, ${JSON.stringify(`${base}/match`)}] };\n`,
+        description: "Deferred deep linking endpoint (Netlify Function)",
+        destination: "`netlify/functions/dl.mjs`",
+      });
+      out.steps.push(
+        "Copy `deferred/netlify/netlify/functions/dl.mjs` to `netlify/functions/` in your project.",
+        storage === "redis"
+          ? "Add a Redis database and set `REDIS_URL` in the site's environment."
+          : "Add a Postgres database and set `DATABASE_URL` in the site's environment.",
+      );
+      break;
+    }
+    case "node": {
+      out.files.push({
+        path: `${dir}/server.mjs`,
+        content: `${header}\nimport { createServer } from "node:http";\n${imports([`import { createHandler, toNodeListener, ${factory} } from ${KIT};`])}\n\nconst settings = ${settings};\n\n${store?.setup.join("\n") ?? ""}\n\nconst handle = createHandler({\n  settings,\n  store,\n  ip: (r) => r.headers.get("x-forwarded-for")?.split(",")[0]?.trim(),\n});\n\nconst port = Number(process.env.PORT ?? 3100);\ncreateServer(toNodeListener(handle)).listen(port, "127.0.0.1", () => console.log(\`deferred deep linking on 127.0.0.1:\${port}\`));\n`,
+        description: "Deferred deep linking endpoint (Node server)",
+        destination: "anywhere you can run Node 20+; proxy the deferred paths to it",
+      });
+      out.steps.push(
+        "Run `deferred/node/server.mjs` with Node 20 or newer, with the packages listed under dependencies installed next to it.",
+        `Proxy \`${base}/click\` and \`${base}/match\` from your web server to it (the nginx snippet is in the generated \`nginx-deeplinker.conf\`). It listens on 127.0.0.1 only.`,
+      );
+      break;
+    }
+  }
+  return out;
+}
+
+/** The PHP endpoint: the same contract and the same matching rules as the JavaScript handler, SQLite through PDO. */
+export function phpEndpoint(settings: DeferredInput["settings"]): string {
+  return `<?php
+// Generated by \`deeplinker build\`. Deferred deep linking endpoint: POST .../click and POST .../match.
+// Keeps: the URL, a /24 (IPv4) or /48 (IPv6) prefix, the OS, its major version, the device class and the primary
+// language, for ${settings.ttlSeconds} seconds. Not kept: the address, the user agent, cookies.
+declare(strict_types=1);
+
+$settings = json_decode(<<<'JSON'
+${settingsOf(settings)}
+JSON, true);
+
+header('Content-Type: application/json');
+header('Cache-Control: no-store');
+
+function dl_respond(int $status, $body = null): void
+{
+    http_response_code($status);
+    if ($body !== null) {
+        echo json_encode($body, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+    }
+    exit;
+}
+
+function dl_own_url($value, array $hosts): ?string
+{
+    if (!is_string($value) || strlen($value) > 2048) {
+        return null;
+    }
+    $parts = parse_url($value);
+    if ($parts === false || !isset($parts['scheme'], $parts['host'])) {
+        return null;
+    }
+    if (!in_array(strtolower($parts['scheme']), ['http', 'https'], true)) {
+        return null;
+    }
+    return in_array(strtolower($parts['host']), $hosts, true) ? $value : null;
+}
+
+function dl_ip_prefix(?string $ip): ?string
+{
+    if (!$ip) {
+        return null;
+    }
+    $ip = trim($ip);
+    if (($zone = strpos($ip, '%')) !== false) {
+        $ip = substr($ip, 0, $zone);
+    }
+    $bin = @inet_pton($ip);
+    if ($bin === false) {
+        return null;
+    }
+    if (strlen($bin) === 16 && substr($bin, 0, 12) === "\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\xff\\xff") {
+        $bin = substr($bin, 12);
+    }
+    if (strlen($bin) === 4) {
+        return implode('.', array_slice(array_map('ord', str_split($bin)), 0, 3)) . '.0/24';
+    }
+    $groups = array_values(unpack('n3', substr($bin, 0, 6)));
+    return sprintf('%x:%x:%x::/48', $groups[0], $groups[1], $groups[2]);
+}
+
+function dl_platform_of(string $os): string
+{
+    return $os === 'ios' || $os === 'ipados' ? 'ios' : ($os === 'android' ? 'android' : 'other');
+}
+
+function dl_primary_language(?string $value): string
+{
+    return preg_match('/^\\s*([a-z]{2,3})/i', (string) $value, $m) ? strtolower($m[1]) : '';
+}
+
+function dl_major_version(?string $value): string
+{
+    return preg_match('/^\\s*(\\d+)/', (string) $value, $m) ? $m[1] : '';
+}
+
+function dl_signals(string $ua, string $acceptLanguage): array
+{
+    $os = 'other';
+    $device = 'desktop';
+    $major = '';
+    if (preg_match('/iPhone|iPod/', $ua)) {
+        [$os, $device] = ['ios', 'phone'];
+        $major = preg_match('/OS (\\d+)[_.]/', $ua, $m) ? $m[1] : '';
+    } elseif (preg_match('/iPad/', $ua)) {
+        [$os, $device] = ['ipados', 'tablet'];
+        $major = preg_match('/OS (\\d+)[_.]/', $ua, $m) ? $m[1] : '';
+    } elseif (preg_match('/Android/', $ua)) {
+        $os = 'android';
+        $device = preg_match('/Mobile/', $ua) ? 'phone' : 'tablet';
+        $major = preg_match('/Android (\\d+)/', $ua, $m) ? $m[1] : '';
+    }
+    return ['os' => $os, 'osMajor' => $major, 'deviceClass' => $device, 'lang' => dl_primary_language($acceptLanguage)];
+}
+
+$action = basename(rtrim((string) parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH), '/'));
+if ($action !== 'click' && $action !== 'match') {
+    dl_respond(404, ['error' => 'not_found']);
+}
+if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
+    header('Allow: POST');
+    dl_respond(405, ['error' => 'method_not_allowed']);
+}
+
+$raw = (string) file_get_contents('php://input', false, null, 0, 4097);
+if (strlen($raw) > 4096) {
+    dl_respond(413, ['error' => 'too_large']);
+}
+$decoded = $raw === '' ? new stdClass() : json_decode($raw);
+if (!is_object($decoded)) {
+    dl_respond(400, ['error' => 'invalid_json']);
+}
+$body = (array) $decoded;
+
+$trust = getenv('DEEPLINKER_TRUST_PROXY') === '1';
+$forwarded = $trust ? trim(explode(',', $_SERVER['HTTP_CF_CONNECTING_IP'] ?? $_SERVER['HTTP_X_FORWARDED_FOR'] ?? '')[0]) : '';
+$prefix = dl_ip_prefix($forwarded !== '' ? $forwarded : ($_SERVER['REMOTE_ADDR'] ?? null));
+
+// Outside the web root unless you say otherwise: the system temp folder is never served. Clicks live for about an hour,
+// so losing the file when the system clears it costs nothing.
+$path = getenv('DEEPLINKER_DB') ?: sys_get_temp_dir() . '/deeplinker-' . substr(sha1(__FILE__), 0, 12) . '.sqlite';
+$fresh = !file_exists($path);
+$db = new PDO('sqlite:' . $path);
+$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+$db->exec('CREATE TABLE IF NOT EXISTS deeplinker_clicks (id TEXT PRIMARY KEY, prefix TEXT NOT NULL, url TEXT NOT NULL, ts INTEGER NOT NULL, expires INTEGER NOT NULL, os TEXT NOT NULL, os_major TEXT NOT NULL, device TEXT NOT NULL, lang TEXT NOT NULL)');
+$db->exec('CREATE INDEX IF NOT EXISTS deeplinker_clicks_prefix ON deeplinker_clicks (prefix, ts DESC)');
+if ($fresh) {
+    @chmod($path, 0600);
+}
+$now = (int) round(microtime(true) * 1000);
+
+if ($action === 'click') {
+    $url = dl_own_url($body['url'] ?? null, $settings['hosts']);
+    if ($url === null) {
+        dl_respond(400, ['error' => 'invalid_url']);
+    }
+    if ($prefix !== null) {
+        $db->prepare('DELETE FROM deeplinker_clicks WHERE expires <= ?')->execute([$now]);
+        $s = dl_signals($_SERVER['HTTP_USER_AGENT'] ?? '', $_SERVER['HTTP_ACCEPT_LANGUAGE'] ?? '');
+        $db->prepare('INSERT OR IGNORE INTO deeplinker_clicks (id, prefix, url, ts, expires, os, os_major, device, lang) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)')
+            ->execute([bin2hex(random_bytes(16)), $prefix, $url, $now, $now + $settings['ttlSeconds'] * 1000, $s['os'], $s['osMajor'], $s['deviceClass'], $s['lang']]);
+    }
+    dl_respond(204);
+}
+
+// The Install Referrer may come back as the URL itself or percent-encoded once (Google's docs do not say): accept both.
+$referred = dl_own_url($body['installReferrer'] ?? null, $settings['hosts']);
+if ($referred === null && is_string($body['installReferrer'] ?? null)) {
+    $once = $body['installReferrer'];
+    // Only a well-formed, UTF-8 result counts, as in the JavaScript handler (decodeURIComponent throws otherwise).
+    if (!preg_match('/%(?![0-9a-fA-F]{2})/', $once)) {
+        $decoded = rawurldecode($once);
+        $referred = preg_match('//u', $decoded) ? dl_own_url($decoded, $settings['hosts']) : null;
+    }
+}
+if ($referred !== null) {
+    dl_respond(200, ['match' => 'deterministic', 'url' => $referred]);
+}
+$pasted = !empty($settings['clipboard']) ? dl_own_url($body['clipboard'] ?? null, $settings['hosts']) : null;
+if ($pasted !== null) {
+    dl_respond(200, ['match' => 'clipboard', 'url' => $pasted]);
+}
+
+$platform = ($body['platform'] ?? null) === 'ios' ? 'ios' : (($body['platform'] ?? null) === 'android' ? 'android' : 'other');
+if ($prefix === null || $platform === 'other') {
+    dl_respond(200, ['match' => 'none']);
+}
+$askMajor = dl_major_version(is_string($body['osVersion'] ?? null) ? $body['osVersion'] : null);
+$askDevice = is_string($body['deviceClass'] ?? null) ? $body['deviceClass'] : '';
+$askLang = dl_primary_language(is_string($body['language'] ?? null) ? $body['language'] : null);
+
+$rows = $db->prepare('SELECT id, url, ts, os, os_major, device, lang FROM deeplinker_clicks WHERE prefix = ? AND expires > ? ORDER BY ts DESC LIMIT 50');
+$rows->execute([$prefix, $now]);
+$candidates = [];
+foreach ($rows->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    if (dl_platform_of($row['os']) !== $platform) {
+        continue;
+    }
+    if ($askMajor !== '' && $row['os_major'] !== '' && $askMajor !== $row['os_major']) {
+        continue;
+    }
+    $score = ($askMajor !== '' && $row['os_major'] !== '') ? 2 : 1;
+    if ($askLang !== '' && $row['lang'] !== '' && $askLang === $row['lang']) {
+        $score += 1;
+    }
+    if ($askDevice !== '' && $row['device'] !== '' && $askDevice === $row['device']) {
+        $score += 1;
+    }
+    $candidates[] = ['row' => $row, 'score' => $score];
+}
+usort($candidates, fn ($a, $b) => $b['score'] <=> $a['score'] ?: (int) $b['row']['ts'] <=> (int) $a['row']['ts']);
+if (!$candidates) {
+    dl_respond(200, ['match' => 'none']);
+}
+$best = $candidates[0];
+$ties = count(array_filter($candidates, fn ($c) => $c['score'] === $best['score']));
+$db->prepare('DELETE FROM deeplinker_clicks WHERE id = ?')->execute([$best['row']['id']]);
+dl_respond(200, ['match' => 'probabilistic', 'url' => $best['row']['url'], 'confidence' => round($best['score'] / 4 / ($ties > 1 ? 2 : 1), 2)]);
+`;
+}

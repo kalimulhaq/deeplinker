@@ -1,0 +1,12 @@
+{
+  "name": "deeplinker-example-laravel",
+  "private": true,
+  "scripts": {
+    "deeplinker:build": "deeplinker build",
+    "deeplinker:snippets": "deeplinker app-snippets",
+    "deeplinker:verify": "deeplinker verify https://example.com"
+  },
+  "devDependencies": {
+    "@kalimulhaq/deeplinker": "^0.1.0"
+  }
+}

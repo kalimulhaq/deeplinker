@@ -1,0 +1,40 @@
+{
+  "name": "deeplinker",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Turn any web page into a deep link. Published as @kalimulhaq/deeplinker.",
+  "license": "MIT",
+  "type": "module",
+  "packageManager": "pnpm@12.14.0",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "typecheck": "turbo run typecheck",
+    "size": "turbo run size",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "e2e:examples": "node scripts/e2e-examples.mjs",
+    "test:browser": "playwright test",
+    "changeset": "changeset",
+    "version-packages": "changeset version",
+    "typecheck:browser": "tsc -p test/browser/tsconfig.json",
+    "release:check": "node scripts/release-notes.mjs"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.0",
+    "@playwright/test": "^1.64.1",
+    "@types/node": "^22.0.0",
+    "eslint": "^10.13.0",
+    "happy-dom": "^21.0.4",
+    "prettier": "^3.9.10",
+    "tsup": "^9.0.0",
+    "turbo": "^2.11.10",
+    "typescript": "~5.9.3",
+    "typescript-eslint": "^8.72.0",
+    "vitest": "^5.0.5"
+  }
+}

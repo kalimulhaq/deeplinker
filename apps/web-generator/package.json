@@ -1,0 +1,21 @@
+{
+  "name": "@deeplinker/web-generator",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "A static page that turns a config into the same files `deeplinker build` writes, as a ZIP. Everything runs in the browser.",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@deeplinker/core": "workspace:*",
+    "@deeplinker/generator": "workspace:*",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@deeplinker/cli": "workspace:*",
+    "esbuild": "^0.28.2"
+  }
+}

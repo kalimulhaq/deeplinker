@@ -1,0 +1,527 @@
+:root {
+  --paper: #f2f4f1;
+  --field: #ffffff;
+  --ink: #0e1b3d;
+  --muted: #4b5878;
+  --hint: #5f6b88;
+  --rule: #c9d0cb;
+  --edge: #8a96a8;
+  --blue: #1f4fd1;
+  --yellow: #ffc72c;
+  --yellow-hover: #ffb800;
+  --on-yellow: #0e1b3d;
+  --bad: #b3261e;
+  --sans:
+    "Avenir Next", "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, "Helvetica Neue",
+    sans-serif;
+  --mono: ui-monospace, "SF Mono", "Cascadia Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+}
+
+:root:not([data-theme="light"]) {
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #0b1530;
+    --field: #101d42;
+    --ink: #e6ebf7;
+    --muted: #a3afcb;
+    --hint: #9aa7c6;
+    --rule: #26355f;
+    --edge: #5a6a96;
+    --blue: #8fb0ff;
+    --bad: #ff8a80;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 15px/1.5 var(--sans);
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+code,
+pre,
+textarea,
+input[type="text"] {
+  font-family: var(--mono);
+}
+
+code {
+  font-size: 0.9em;
+}
+
+:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 2px;
+}
+
+/* ---------------------------------------------------------------- header */
+
+.top {
+  padding: 28px 32px 22px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.top h1 {
+  font-size: 28px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+}
+
+.top p {
+  margin-top: 8px;
+  max-width: 62ch;
+  color: var(--muted);
+}
+
+.jump {
+  display: none;
+  margin-top: 10px;
+  color: var(--blue);
+  font-weight: 600;
+}
+
+/* ---------------------------------------------------------------- layout */
+
+.app {
+  display: grid;
+  grid-template-columns: minmax(340px, 460px) minmax(0, 1fr);
+  align-items: start;
+}
+
+.input {
+  padding: 0 32px 48px;
+  border-right: 1px solid var(--rule);
+}
+
+.output {
+  padding: 0 32px 48px;
+  min-width: 0;
+}
+
+@media (max-width: 860px) {
+  .app {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .top,
+  .input,
+  .output {
+    padding-inline: 16px;
+  }
+
+  .input {
+    border-right: 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  /* The files are a long scroll below the form on a phone, so say where they are. */
+  .jump {
+    display: inline-block;
+  }
+}
+
+/* ---------------------------------------------------------------- input: tabs */
+
+.tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.tabs button {
+  min-height: 44px;
+  padding: 0 14px;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tabs button[aria-selected="true"] {
+  color: var(--ink);
+  box-shadow: inset 0 -3px 0 var(--yellow);
+}
+
+/* ---------------------------------------------------------------- input: fields */
+
+fieldset {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+fieldset + fieldset {
+  margin-top: 22px;
+  padding-top: 20px;
+  border-top: 1px solid var(--rule);
+}
+
+/* Floated so the heading sits inside the group, not notched into its top rule. */
+legend {
+  float: left;
+  width: 100%;
+  padding: 0 0 6px;
+  font-size: 17px;
+  font-weight: 650;
+}
+
+legend + * {
+  clear: both;
+}
+
+.intro {
+  margin-bottom: 12px;
+  max-width: 56ch;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.field {
+  margin-bottom: 14px;
+}
+
+.field label {
+  display: block;
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+.field input[type="text"],
+.field textarea,
+.field select {
+  display: block;
+  width: 100%;
+  padding: 9px 10px;
+  border: 1px solid var(--edge);
+  border-radius: 6px;
+  background: var(--field);
+  color: var(--ink);
+  font-size: 13.5px;
+  line-height: 1.45;
+}
+
+.field select {
+  font-family: var(--sans);
+  font-size: 14.5px;
+}
+
+.field textarea {
+  resize: vertical;
+}
+
+.field ::placeholder {
+  color: var(--hint);
+  opacity: 1;
+}
+
+.hint {
+  margin-top: 4px;
+  max-width: 56ch;
+  color: var(--hint);
+  font-size: 13px;
+}
+
+.field.check label {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin-bottom: 0;
+}
+
+.field.check input {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin: 2px 0 0;
+  accent-color: var(--blue);
+}
+
+.field.check .hint {
+  margin-left: 28px;
+}
+
+#json {
+  min-height: 420px;
+  font-size: 13px;
+  white-space: pre;
+  overflow: auto;
+}
+
+.existing {
+  margin-top: 26px;
+  padding-top: 18px;
+  border-top: 1px solid var(--rule);
+}
+
+.existing summary {
+  cursor: pointer;
+  font-size: 17px;
+  font-weight: 650;
+}
+
+.existing p {
+  margin: 8px 0 14px;
+  max-width: 56ch;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+/* ---------------------------------------------------------------- output */
+
+.bar {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 64px;
+  margin-bottom: 14px;
+  background: var(--paper);
+  border-bottom: 1px solid var(--rule);
+}
+
+.bar h2 {
+  font-size: 17px;
+  font-weight: 650;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+button.primary,
+button.secondary {
+  min-height: 42px;
+  padding: 0 18px;
+  border-radius: 6px;
+  font: inherit;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+button.primary {
+  border: 1px solid var(--yellow);
+  background: var(--yellow);
+  color: var(--on-yellow);
+}
+
+button.primary:hover:not(:disabled) {
+  background: var(--yellow-hover);
+}
+
+button.secondary {
+  border: 1px solid var(--edge);
+  background: transparent;
+  color: var(--ink);
+}
+
+button.secondary:hover:not(:disabled) {
+  border-color: var(--ink);
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+#status {
+  margin-bottom: 14px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+#empty p {
+  max-width: 48ch;
+  margin-bottom: 12px;
+}
+
+#problems {
+  margin-bottom: 20px;
+}
+
+#problems h3,
+.preview h3 {
+  font-size: 15px;
+  font-weight: 650;
+}
+
+ul.issues,
+ul.warnings,
+.notes ul {
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+ul.issues li,
+ul.warnings li {
+  margin: 8px 0;
+  padding-left: 12px;
+  max-width: 76ch;
+}
+
+ul.issues li {
+  border-left: 3px solid var(--bad);
+}
+
+ul.warnings li {
+  border-left: 3px solid var(--yellow);
+}
+
+.problem {
+  margin-top: 6px;
+  padding-left: 12px;
+  border-left: 3px solid var(--bad);
+  font-family: var(--mono);
+  font-size: 13px;
+}
+
+.example {
+  display: block;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 12.5px;
+}
+
+/* The file list is what you are about to deploy, so it gets the most weight on the page. */
+.files {
+  margin: 0 0 22px;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--rule);
+}
+
+.files li {
+  border-bottom: 1px solid var(--rule);
+}
+
+.files button {
+  display: block;
+  width: 100%;
+  padding: 10px 12px;
+  border: 0;
+  border-left: 4px solid transparent;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.files button:hover {
+  background: color-mix(in srgb, var(--ink) 6%, transparent);
+}
+
+.files button[aria-current="true"] {
+  border-left-color: var(--yellow);
+  background: color-mix(in srgb, var(--ink) 8%, transparent);
+}
+
+.files .path {
+  display: block;
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.files .dir {
+  color: var(--muted);
+  font-weight: 400;
+}
+
+.files .what {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+/* Wide enough: the list on the left, the file you picked on the right, and it stays in view while you read it. */
+@media (min-width: 1200px) {
+  #result {
+    display: grid;
+    grid-template-columns: minmax(280px, 2fr) minmax(0, 3fr);
+    column-gap: 28px;
+    align-items: start;
+  }
+
+  .preview {
+    position: sticky;
+    top: 78px;
+  }
+
+  .preview pre {
+    max-height: calc(100vh - 230px);
+  }
+
+  .notes {
+    grid-column: 1 / -1;
+  }
+}
+
+.preview p {
+  margin: 2px 0 10px;
+  max-width: 76ch;
+  color: var(--muted);
+  font-size: 13.5px;
+}
+
+.preview pre {
+  margin: 0;
+  max-height: 56vh;
+  padding: 12px 14px;
+  overflow: auto;
+  border: 1px solid var(--edge);
+  border-radius: 6px;
+  background: var(--field);
+  font-size: 12.5px;
+  line-height: 1.5;
+  tab-size: 2;
+}
+
+.notes {
+  margin-top: 20px;
+}
+
+.notes summary {
+  cursor: pointer;
+  font-weight: 650;
+}
+
+.notes li {
+  margin: 6px 0;
+  max-width: 76ch;
+  color: var(--muted);
+  font-size: 14px;
+}

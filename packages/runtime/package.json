@@ -1,0 +1,21 @@
+{
+  "name": "@deeplinker/runtime",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "sideEffects": false,
+  "description": "Browser library. Zero runtime dependencies, <= 6 KB min+gzip.",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "build": "tsup && node scripts/size-check.mjs",
+    "size": "node scripts/size-check.mjs",
+    "typecheck": "tsc -p tsconfig.json && tsc -p test/tsconfig.json",
+    "test": "pnpm run build && vitest run"
+  },
+  "devDependencies": {
+    "@deeplinker/core": "workspace:*",
+    "terser": "^5.51.2"
+  }
+}

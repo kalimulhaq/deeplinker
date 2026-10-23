@@ -1,0 +1,21 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", "src/runtime-template.generated.ts"]
+    },
+    "typecheck": {
+      "dependsOn": ["^build"]
+    },
+    "test": {
+      "dependsOn": ["^build"]
+    },
+    "size": {
+      "dependsOn": ["build"]
+    },
+    "@kalimulhaq/deeplinker#test": {
+      "dependsOn": ["build"]
+    }
+  }
+}

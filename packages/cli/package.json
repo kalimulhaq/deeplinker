@@ -1,0 +1,22 @@
+{
+  "name": "@deeplinker/cli",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "init / build / verify / app-snippets. All file-system and network I/O lives here.",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@clack/prompts": "^1.8.1",
+    "@deeplinker/core": "workspace:*",
+    "@deeplinker/generator": "workspace:*",
+    "commander": "^15.0.0",
+    "diff": "^9.0.0",
+    "jiti": "^2.7.0"
+  }
+}

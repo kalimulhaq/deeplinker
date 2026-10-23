@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'self'; img-src data:; connect-src 'none'; base-uri 'none'; form-action 'none'"
+    />
+    <meta name="color-scheme" content="light dark" />
+    <title>Deep link generator</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230e1b3d'/%3E%3Cpath d='M9 16h11m-4-5 5 5-5 5' fill='none' stroke='%23ffc72c' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <header class="top">
+      <h1>Deep link generator</h1>
+      <p>
+        Fill in your apps and download the files that make links on your site open them. It all happens in
+        this page: nothing you type is sent anywhere.
+      </p>
+      <a class="jump" href="#output">Go to the files</a>
+    </header>
+
+    <main class="app">
+      <section class="input" aria-label="Configuration">
+        <div class="tabs" role="tablist" aria-label="Edit as">
+          <button type="button" role="tab" id="tab-form" aria-controls="panel-form" aria-selected="true">
+            Form
+          </button>
+          <button
+            type="button"
+            role="tab"
+            id="tab-json"
+            aria-controls="panel-json"
+            aria-selected="false"
+            tabindex="-1"
+          >
+            JSON
+          </button>
+        </div>
+
+        <div role="tabpanel" id="panel-form" aria-labelledby="tab-form">
+          <form id="form" autocomplete="off" novalidate></form>
+          <details class="existing" id="existing">
+            <summary>Merge with files you already have</summary>
+            <p>
+              Paste a file and the generated one keeps your content and adds the deeplinker part. The page
+              cannot read your project, so this is how existing files are merged.
+            </p>
+            <div class="field">
+              <label for="existing-manifest">Web app manifest (manifest.json)</label>
+              <textarea
+                id="existing-manifest"
+                data-existing="manifest"
+                rows="4"
+                spellcheck="false"
+              ></textarea>
+            </div>
+            <div class="field">
+              <label for="existing-htaccess">.htaccess</label>
+              <textarea
+                id="existing-htaccess"
+                data-existing="htaccess"
+                rows="4"
+                spellcheck="false"
+              ></textarea>
+            </div>
+            <div class="field">
+              <label for="existing-vercelJson">vercel.json</label>
+              <textarea
+                id="existing-vercelJson"
+                data-existing="vercelJson"
+                rows="4"
+                spellcheck="false"
+              ></textarea>
+            </div>
+            <div class="field">
+              <label for="existing-headers">_headers (Netlify, Cloudflare Pages)</label>
+              <textarea id="existing-headers" data-existing="headers" rows="4" spellcheck="false"></textarea>
+            </div>
+            <div class="field">
+              <label for="existing-routesJson">_routes.json (Cloudflare Pages)</label>
+              <textarea
+                id="existing-routesJson"
+                data-existing="routesJson"
+                rows="4"
+                spellcheck="false"
+              ></textarea>
+            </div>
+          </details>
+        </div>
+
+        <div role="tabpanel" id="panel-json" aria-labelledby="tab-json" hidden>
+          <div class="field">
+            <label for="json">deeplinker.config.json</label>
+            <p class="hint" id="json-hint">
+              The same file the command line reads, so you can keep it in your project and run
+              <code>npx deeplinker build</code> later. The form edits this text; this tab reaches every
+              option.
+            </p>
+            <textarea id="json" spellcheck="false" aria-describedby="json-hint" rows="24"></textarea>
+          </div>
+        </div>
+      </section>
+
+      <section class="output" id="output" aria-labelledby="out-title">
+        <div class="bar">
+          <h2 id="out-title">Files</h2>
+          <div class="actions">
+            <button type="button" id="download-config" class="secondary" disabled>Download config</button>
+            <button type="button" id="download-zip" class="primary" disabled>Download ZIP</button>
+          </div>
+        </div>
+
+        <p id="status" role="status"></p>
+        <div id="empty" hidden>
+          <p>Add a domain and at least one app, and the files appear here.</p>
+          <button type="button" id="load-example" class="secondary">Fill in an example</button>
+        </div>
+        <div id="problems" hidden></div>
+        <div id="result" hidden>
+          <ul id="files" class="files"></ul>
+          <div class="preview">
+            <h3 id="preview-title"></h3>
+            <p id="preview-where"></p>
+            <pre id="preview" tabindex="0" aria-labelledby="preview-title"></pre>
+          </div>
+          <details id="notes" class="notes" hidden>
+            <summary>Notes from the build</summary>
+            <ul></ul>
+          </details>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

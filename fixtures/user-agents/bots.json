@@ -1,0 +1,256 @@
+[
+  {
+    "name": "Googlebot desktop",
+    "ua": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
+    "expect": {
+      "os": "unknown",
+      "deviceClass": "desktop",
+      "browser": "other",
+      "bot": "generic"
+    }
+  },
+  {
+    "name": "Googlebot smartphone looks like an Android phone but is a bot",
+    "ua": "Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.6478.126 Mobile Safari/537.36 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
+    "expect": {
+      "os": "android",
+      "deviceClass": "phone",
+      "browser": "chrome",
+      "ecosystem": "google",
+      "bot": "generic"
+    }
+  },
+  {
+    "name": "Google-InspectionTool (Search Console)",
+    "ua": "Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.6478.126 Mobile Safari/537.36 (compatible; Google-InspectionTool/1.0)",
+    "expect": {
+      "os": "android",
+      "deviceClass": "phone",
+      "browser": "chrome",
+      "ecosystem": "google",
+      "bot": "crawler"
+    }
+  },
+  {
+    "name": "Bingbot",
+    "ua": "Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)",
+    "expect": {
+      "os": "unknown",
+      "deviceClass": "desktop",
+      "browser": "other",
+      "bot": "generic"
+    }
+  },
+  {
+    "name": "Bingbot mobile looks like an iPhone",
+    "ua": "Mozilla/5.0 (iPhone; CPU iPhone OS 7_0 like Mac OS X) AppleWebKit/537.51.1 (KHTML, like Gecko) Version/7.0 Mobile/11A465 Safari/9537.53 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)",
+    "expect": {
+      "os": "ios",
+      "deviceClass": "phone",
+      "browser": "safari",
+      "bot": "generic"
+    }
+  },
+  {
+    "name": "YandexBot",
+    "ua": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)",
+    "expect": {
+      "os": "unknown",
+      "deviceClass": "desktop",
+      "browser": "other",
+      "bot": "generic"
+    }
+  },
+  {
+    "name": "Baiduspider",
+    "ua": "Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)",
+    "expect": {
+      "os": "unknown",
+      "deviceClass": "desktop",
+      "browser": "other",
+      "bot": "generic"
+    }
+  },
+  {
+    "name": "DuckDuckBot",
+    "ua": "DuckDuckBot/1.1; (+http://duckduckgo.com/duckduckbot.html)",
+    "expect": {
+      "os": "unknown",
+      "deviceClass": "desktop",
+      "browser": "other",
+      "bot": "generic"
+    }
+  },
+  {
+    "name": "Applebot",
+    "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Safari/605.1.15 (Applebot/0.1; +http://www.apple.com/go/applebot)",
+    "expect": {
+      "os": "macos",
+      "deviceClass": "desktop",
+      "browser": "safari",
+      "bot": "generic"
+    }
+  },
+  {
+    "name": "Facebook link-preview crawler",
+    "ua": "facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)",
+    "expect": {
+      "os": "unknown",
+      "deviceClass": "desktop",
+      "browser": "other",
+      "bot": "crawler"
+    }
+  },
+  {
+    "name": "Twitterbot",
+    "ua": "Twitterbot/1.0",
+    "expect": {
+      "os": "unknown",
+      "deviceClass": "desktop",
+      "browser": "other",
+      "bot": "generic"
+    }
+  },
+  {
+    "name": "LinkedInBot",
+    "ua": "LinkedInBot/1.0 (compatible; Mozilla/5.0; Apache-HttpClient +http://www.linkedin.com)",
+    "expect": {
+      "os": "unknown",
+      "deviceClass": "desktop",
+      "browser": "other",
+      "bot": "generic"
+    }
+  },
+  {
+    "name": "WhatsApp link preview",
+    "ua": "WhatsApp/2.23.20.0 A",
+    "expect": {
+      "os": "unknown",
+      "deviceClass": "desktop",
+      "browser": "other",
+      "bot": "crawler"
+    }
+  },
+  {
+    "name": "Slackbot link expander",
+    "ua": "Slackbot-LinkExpanding 1.0 (+https://api.slack.com/robots)",
+    "expect": {
+      "os": "unknown",
+      "deviceClass": "desktop",
+      "browser": "other",
+      "bot": "generic"
+    }
+  },
+  {
+    "name": "TelegramBot",
+    "ua": "TelegramBot (like TwitterBot)",
+    "expect": {
+      "os": "unknown",
+      "deviceClass": "desktop",
+      "browser": "other",
+      "bot": "generic"
+    }
+  },
+  {
+    "name": "Discordbot",
+    "ua": "Mozilla/5.0 (compatible; Discordbot/2.0; +https://discordapp.com)",
+    "expect": {
+      "os": "unknown",
+      "deviceClass": "desktop",
+      "browser": "other",
+      "bot": "generic"
+    }
+  },
+  {
+    "name": "Pinterestbot",
+    "ua": "Mozilla/5.0 (compatible; Pinterestbot/1.0; +http://www.pinterest.com/bot.html)",
+    "expect": {
+      "os": "unknown",
+      "deviceClass": "desktop",
+      "browser": "other",
+      "bot": "generic"
+    }
+  },
+  {
+    "name": "AhrefsBot",
+    "ua": "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)",
+    "expect": {
+      "os": "unknown",
+      "deviceClass": "desktop",
+      "browser": "other",
+      "bot": "generic"
+    }
+  },
+  {
+    "name": "SemrushBot",
+    "ua": "Mozilla/5.0 (compatible; SemrushBot/7~bl; +http://www.semrush.com/bot.html)",
+    "expect": {
+      "os": "unknown",
+      "deviceClass": "desktop",
+      "browser": "other",
+      "bot": "generic"
+    }
+  },
+  {
+    "name": "PetalBot (Huawei) looks like an Android phone",
+    "ua": "Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)",
+    "expect": {
+      "os": "android",
+      "deviceClass": "phone",
+      "browser": "safari",
+      "ecosystem": "google",
+      "bot": "generic"
+    }
+  },
+  {
+    "name": "Lighthouse on an emulated Moto G",
+    "ua": "Mozilla/5.0 (Linux; Android 11; moto g power (2022)) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Mobile Safari/537.36 Chrome-Lighthouse",
+    "expect": {
+      "os": "android",
+      "deviceClass": "phone",
+      "browser": "chrome",
+      "ecosystem": "google",
+      "bot": "lighthouse"
+    }
+  },
+  {
+    "name": "Headless Chrome",
+    "ua": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/126.0.0.0 Safari/537.36",
+    "expect": {
+      "os": "linux",
+      "deviceClass": "desktop",
+      "browser": "chrome",
+      "bot": "headless"
+    }
+  },
+  {
+    "name": "An unlisted crawler is caught by the generic rule",
+    "ua": "Mozilla/5.0 (compatible; ExampleBot/1.0; +https://example.com/bot)",
+    "expect": {
+      "os": "unknown",
+      "deviceClass": "desktop",
+      "browser": "other",
+      "bot": "generic"
+    }
+  },
+  {
+    "name": "An unlisted spider is caught by the generic rule",
+    "ua": "Mozilla/5.0 (compatible; SomeSpider/2.1)",
+    "expect": {
+      "os": "unknown",
+      "deviceClass": "desktop",
+      "browser": "other",
+      "bot": "generic"
+    }
+  },
+  {
+    "name": "An empty user agent is treated as not a browser",
+    "ua": "",
+    "expect": {
+      "os": "unknown",
+      "deviceClass": "desktop",
+      "browser": "other",
+      "bot": "empty-ua"
+    }
+  }
+]

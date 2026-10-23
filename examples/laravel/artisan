@@ -1,0 +1,3 @@
+#!/usr/bin/env php
+<?php
+// Stand-in for Laravel's artisan script: its presence is what `deeplinker build` uses to detect Laravel.

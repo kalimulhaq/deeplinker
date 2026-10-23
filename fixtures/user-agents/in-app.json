@@ -1,0 +1,244 @@
+[
+  {
+    "name": "Instagram on iOS",
+    "ua": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/21F90 Instagram 340.0.0.19.108 (iPhone14,5; iOS 17_5; en_US; en; scale=3.00; 1170x2532; 600689049)",
+    "expect": {
+      "os": "ios",
+      "deviceClass": "phone",
+      "browser": "safari",
+      "inApp": "instagram"
+    }
+  },
+  {
+    "name": "Instagram on Android (Samsung)",
+    "ua": "Mozilla/5.0 (Linux; Android 13; SM-S918B Build/TP1A.220624.014; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/126.0.6478.122 Mobile Safari/537.36 Instagram 340.0.0.30.109 Android (33/13; 480dpi; 1080x2340; samsung; SM-S918B; dm3q; qcom; en_US; 600689049)",
+    "expect": {
+      "os": "android",
+      "deviceClass": "phone",
+      "browser": "chrome",
+      "ecosystem": "samsung",
+      "inApp": "instagram"
+    }
+  },
+  {
+    "name": "Facebook on iOS",
+    "ua": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/21F90 [FBAN/FBIOS;FBAV/464.0.0.54.108;FBBV/605901234;FBDV/iPhone14,5;FBMD/iPhone;FBSN/iOS;FBSV/17.5;FBSS/3;FBID/phone;FBLC/en_US;FBOP/5]",
+    "expect": {
+      "os": "ios",
+      "deviceClass": "phone",
+      "browser": "safari",
+      "inApp": "facebook"
+    }
+  },
+  {
+    "name": "Facebook on Android",
+    "ua": "Mozilla/5.0 (Linux; Android 12; Pixel 6 Build/SQ3A.220705.003.A1; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/126.0.6478.122 Mobile Safari/537.36 [FB_IAB/FB4A;FBAV/460.0.0.37.109;]",
+    "expect": {
+      "os": "android",
+      "deviceClass": "phone",
+      "browser": "chrome",
+      "ecosystem": "google",
+      "inApp": "facebook"
+    }
+  },
+  {
+    "name": "Messenger on iOS (carries Facebook tokens too, must win)",
+    "ua": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/21F90 [FBAN/MessengerForiOS;FBAV/460.0.0.46.108;FBBV/600000000;FBDV/iPhone14,5;FBMD/iPhone;FBSN/iOS;FBSV/17.5;FBLC/en_US]",
+    "expect": {
+      "os": "ios",
+      "deviceClass": "phone",
+      "browser": "safari",
+      "inApp": "messenger"
+    }
+  },
+  {
+    "name": "Messenger on Android (Orca)",
+    "ua": "Mozilla/5.0 (Linux; Android 12; Pixel 6 Build/SQ3A.220705.003.A1; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/126.0.6478.122 Mobile Safari/537.36 [FB_IAB/Orca-Android;FBAV/455.0.0.31.109;]",
+    "expect": {
+      "os": "android",
+      "deviceClass": "phone",
+      "browser": "chrome",
+      "ecosystem": "google",
+      "inApp": "messenger"
+    }
+  },
+  {
+    "name": "LinkedIn on iOS",
+    "ua": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 LinkedInApp/9.30.1234",
+    "expect": {
+      "os": "ios",
+      "deviceClass": "phone",
+      "browser": "safari",
+      "inApp": "linkedin"
+    }
+  },
+  {
+    "name": "LinkedIn on Android",
+    "ua": "Mozilla/5.0 (Linux; Android 13; Pixel 7 Build/TQ3A.230901.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/126.0.6478.122 Mobile Safari/537.36 LinkedInApp/4.1.1017",
+    "expect": {
+      "os": "android",
+      "deviceClass": "phone",
+      "browser": "chrome",
+      "ecosystem": "google",
+      "inApp": "linkedin"
+    }
+  },
+  {
+    "name": "X / Twitter on iOS, representative",
+    "ua": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 Twitter for iPhone/10.45",
+    "expect": {
+      "os": "ios",
+      "deviceClass": "phone",
+      "browser": "safari",
+      "inApp": "twitter"
+    }
+  },
+  {
+    "name": "X / Twitter on Android, representative",
+    "ua": "Mozilla/5.0 (Linux; Android 13; Pixel 7 Build/TQ3A.230901.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/126.0.6478.122 Mobile Safari/537.36 TwitterAndroid",
+    "expect": {
+      "os": "android",
+      "deviceClass": "phone",
+      "browser": "chrome",
+      "ecosystem": "google",
+      "inApp": "twitter"
+    }
+  },
+  {
+    "name": "TikTok on iOS",
+    "ua": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 musical_ly_34.0.0 JsSdk/2.0 NetType/WIFI Channel/App Store ByteLocale/en Region/US",
+    "expect": {
+      "os": "ios",
+      "deviceClass": "phone",
+      "browser": "safari",
+      "inApp": "tiktok"
+    }
+  },
+  {
+    "name": "TikTok on Android",
+    "ua": "Mozilla/5.0 (Linux; Android 13; Pixel 7 Build/TQ3A.230901.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/126.0.6478.122 Mobile Safari/537.36 trill_340005 JsSdk/1.0 NetType/WIFI Channel/googleplay AppName/musical_ly app_version/34.0.5 BytedanceWebview/d8a21c6",
+    "expect": {
+      "os": "android",
+      "deviceClass": "phone",
+      "browser": "chrome",
+      "ecosystem": "google",
+      "inApp": "tiktok"
+    }
+  },
+  {
+    "name": "Snapchat on iOS",
+    "ua": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 Snapchat/12.89.0.45 (like Safari/8618.1.15.10.15, iPhone14,5; iOS 17.5; gzip)",
+    "expect": {
+      "os": "ios",
+      "deviceClass": "phone",
+      "browser": "safari",
+      "inApp": "snapchat"
+    }
+  },
+  {
+    "name": "Snapchat on Android",
+    "ua": "Mozilla/5.0 (Linux; Android 13; Pixel 7 Build/TQ3A.230901.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/126.0.6478.122 Mobile Safari/537.36 Snapchat/12.89.0.45 (Pixel 7; Android 13#TQ3A.230901.001#10;gzip)",
+    "expect": {
+      "os": "android",
+      "deviceClass": "phone",
+      "browser": "chrome",
+      "ecosystem": "google",
+      "inApp": "snapchat"
+    }
+  },
+  {
+    "name": "WeChat on iOS",
+    "ua": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 MicroMessenger/8.0.49(0x18003133) NetType/WIFI Language/en",
+    "expect": {
+      "os": "ios",
+      "deviceClass": "phone",
+      "browser": "safari",
+      "inApp": "wechat"
+    }
+  },
+  {
+    "name": "WeChat on Android",
+    "ua": "Mozilla/5.0 (Linux; Android 13; Pixel 7 Build/TQ3A.230901.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/116.0.0.0 Mobile Safari/537.36 XWEB/1160065 MMWEBSDK/20231201 MMWEBID/1234 MicroMessenger/8.0.47.2560(0x28002F35) WeChat/arm64 Weixin NetType/WIFI Language/en ABI/arm64",
+    "expect": {
+      "os": "android",
+      "deviceClass": "phone",
+      "browser": "chrome",
+      "ecosystem": "google",
+      "inApp": "wechat"
+    }
+  },
+  {
+    "name": "LINE on iOS",
+    "ua": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 Safari Line/14.6.0",
+    "expect": {
+      "os": "ios",
+      "deviceClass": "phone",
+      "browser": "safari",
+      "inApp": "line"
+    }
+  },
+  {
+    "name": "LINE on Android",
+    "ua": "Mozilla/5.0 (Linux; Android 13; Pixel 7 Build/TQ3A.230901.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/126.0.6478.122 Mobile Safari/537.36 Line/14.6.0",
+    "expect": {
+      "os": "android",
+      "deviceClass": "phone",
+      "browser": "chrome",
+      "ecosystem": "google",
+      "inApp": "line"
+    }
+  },
+  {
+    "name": "Telegram on Android, representative",
+    "ua": "Mozilla/5.0 (Linux; Android 13; Pixel 7 Build/TQ3A.230901.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/119.0.6045.193 Mobile Safari/537.36 Telegram-Android/10.9.1 (Google Pixel 7; Android 13; SDK 33; HIGH)",
+    "expect": {
+      "os": "android",
+      "deviceClass": "phone",
+      "browser": "chrome",
+      "ecosystem": "google",
+      "inApp": "telegram"
+    }
+  },
+  {
+    "name": "Gmail, best-effort token (real Gmail apps normally open links in the system browser)",
+    "ua": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 Gmail/6.111.40",
+    "expect": {
+      "os": "ios",
+      "deviceClass": "phone",
+      "browser": "safari",
+      "inApp": "gmail"
+    }
+  },
+  {
+    "name": "Google app on iOS",
+    "ua": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) GSA/330.0.650000000 Mobile/15E148 Safari/604.1",
+    "expect": {
+      "os": "ios",
+      "deviceClass": "phone",
+      "browser": "safari",
+      "inApp": "googleapp"
+    }
+  },
+  {
+    "name": "Google app on Android",
+    "ua": "Mozilla/5.0 (Linux; Android 14; Pixel 8 Build/AP1A.240505.005; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/126.0.6478.122 Mobile Safari/537.36 GSA/15.23.34.29.arm64",
+    "expect": {
+      "os": "android",
+      "deviceClass": "phone",
+      "browser": "chrome",
+      "ecosystem": "google",
+      "inApp": "googleapp"
+    }
+  },
+  {
+    "name": "Generic Android System WebView in an unnamed app",
+    "ua": "Mozilla/5.0 (Linux; Android 13; Pixel 7 Build/TQ3A.230901.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/119.0.6045.193 Mobile Safari/537.36",
+    "expect": {
+      "os": "android",
+      "deviceClass": "phone",
+      "browser": "chrome",
+      "ecosystem": "google",
+      "inApp": "webview"
+    }
+  }
+]

@@ -1,0 +1,179 @@
+[
+  {
+    "name": "macOS Safari",
+    "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Safari/605.1.15",
+    "maxTouchPoints": 0,
+    "platform": "MacIntel",
+    "expect": {
+      "os": "macos",
+      "deviceClass": "desktop",
+      "browser": "safari"
+    }
+  },
+  {
+    "name": "macOS Safari reporting one touch point is still a Mac",
+    "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Safari/605.1.15",
+    "maxTouchPoints": 1,
+    "expect": {
+      "os": "macos",
+      "deviceClass": "desktop",
+      "browser": "safari"
+    }
+  },
+  {
+    "name": "macOS Chrome with Client Hints",
+    "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
+    "uaData": {
+      "mobile": false,
+      "platform": "macOS"
+    },
+    "expect": {
+      "os": "macos",
+      "deviceClass": "desktop",
+      "browser": "chrome"
+    }
+  },
+  {
+    "name": "macOS Firefox",
+    "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:127.0) Gecko/20100101 Firefox/127.0",
+    "expect": {
+      "os": "macos",
+      "deviceClass": "desktop",
+      "browser": "firefox"
+    }
+  },
+  {
+    "name": "macOS Edge",
+    "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36 Edg/126.0.2592.87",
+    "expect": {
+      "os": "macos",
+      "deviceClass": "desktop",
+      "browser": "edge"
+    }
+  },
+  {
+    "name": "macOS Opera",
+    "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36 OPR/111.0.0.0",
+    "expect": {
+      "os": "macos",
+      "deviceClass": "desktop",
+      "browser": "opera"
+    }
+  },
+  {
+    "name": "Windows Chrome with Client Hints",
+    "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
+    "uaData": {
+      "mobile": false,
+      "platform": "Windows"
+    },
+    "expect": {
+      "os": "windows",
+      "deviceClass": "desktop",
+      "browser": "chrome"
+    }
+  },
+  {
+    "name": "Windows Chrome on a touch-screen laptop is still desktop",
+    "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
+    "maxTouchPoints": 10,
+    "expect": {
+      "os": "windows",
+      "deviceClass": "desktop",
+      "browser": "chrome"
+    }
+  },
+  {
+    "name": "Windows Edge with Client Hints",
+    "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36 Edg/126.0.2592.87",
+    "uaData": {
+      "mobile": false,
+      "platform": "Windows"
+    },
+    "expect": {
+      "os": "windows",
+      "deviceClass": "desktop",
+      "browser": "edge"
+    }
+  },
+  {
+    "name": "Windows Firefox",
+    "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:127.0) Gecko/20100101 Firefox/127.0",
+    "expect": {
+      "os": "windows",
+      "deviceClass": "desktop",
+      "browser": "firefox"
+    }
+  },
+  {
+    "name": "Windows Opera",
+    "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36 OPR/111.0.0.0",
+    "expect": {
+      "os": "windows",
+      "deviceClass": "desktop",
+      "browser": "opera"
+    }
+  },
+  {
+    "name": "Linux Chrome with Client Hints",
+    "ua": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
+    "uaData": {
+      "mobile": false,
+      "platform": "Linux"
+    },
+    "expect": {
+      "os": "linux",
+      "deviceClass": "desktop",
+      "browser": "chrome"
+    }
+  },
+  {
+    "name": "Linux Firefox on Ubuntu",
+    "ua": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:127.0) Gecko/20100101 Firefox/127.0",
+    "expect": {
+      "os": "linux",
+      "deviceClass": "desktop",
+      "browser": "firefox"
+    }
+  },
+  {
+    "name": "ChromeOS Chrome",
+    "ua": "Mozilla/5.0 (X11; CrOS x86_64 14541.0.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
+    "expect": {
+      "os": "chromeos",
+      "deviceClass": "desktop",
+      "browser": "chrome"
+    }
+  },
+  {
+    "name": "ChromeOS identified only by Client Hints",
+    "ua": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
+    "uaData": {
+      "mobile": false,
+      "platform": "Chrome OS"
+    },
+    "expect": {
+      "os": "chromeos",
+      "deviceClass": "desktop",
+      "browser": "chrome"
+    }
+  },
+  {
+    "name": "Chrome on Android with \"Request desktop site\" sends a Linux desktop UA",
+    "ua": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
+    "expect": {
+      "os": "linux",
+      "deviceClass": "desktop",
+      "browser": "chrome"
+    }
+  },
+  {
+    "name": "Unknown client with an unfamiliar UA",
+    "ua": "SomeCustomBrowser/1.0",
+    "expect": {
+      "os": "unknown",
+      "deviceClass": "desktop",
+      "browser": "other"
+    }
+  }
+]

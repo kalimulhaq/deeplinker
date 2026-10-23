@@ -1,0 +1,13 @@
+dist
+node_modules
+.turbo
+pnpm-lock.yaml
+*.generated.ts
+deeplinker-dist
+examples/**/deeplinker-dist
+fixtures/user-agents
+fixtures/site
+playwright-report
+test-results
+**/__snapshots__
+docs

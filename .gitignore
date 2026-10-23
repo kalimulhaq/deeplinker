@@ -1,0 +1,39 @@
+# ── Dependencies ─────────────────────────────────────────────────────────────
+node_modules/
+
+# ── Build output ─────────────────────────────────────────────────────────────
+dist/
+.turbo/
+*.tsbuildinfo
+# Runtime template embedded into the generator by scripts/embed-runtime.mjs
+*.generated.ts
+# Output of `deeplinker build` (including inside examples/)
+deeplinker-dist/
+# Copied from the repository root by packages/deeplinker/scripts/prepare-package.mjs when the kit is built
+packages/deeplinker/README.md
+packages/deeplinker/LICENSE
+
+# ── Test output ──────────────────────────────────────────────────────────────
+coverage/
+playwright-report/
+test-results/
+
+# ── Environment and secrets ──────────────────────────────────────────────────
+.env
+.env.*
+!.env.example
+
+# ── Logs ─────────────────────────────────────────────────────────────────────
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# ── Editor and OS files ──────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# ── Local working notes (research decisions, plans, device checklists) ───────
+docs/

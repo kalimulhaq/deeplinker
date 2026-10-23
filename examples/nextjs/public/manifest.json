@@ -1,0 +1,7 @@
+{
+  "name": "Example",
+  "short_name": "Example",
+  "start_url": "/",
+  "display": "standalone",
+  "handle_links": "not-preferred"
+}

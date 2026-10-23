@@ -1,0 +1,138 @@
+openapi: 3.0.3
+info:
+  title: deeplinker deferred deep linking
+  version: 1.0.0
+  description: |
+    The HTTP contract between your website, your server and your apps. Written so an SDK can be built against it.
+
+    **Flow.** A visitor opens a deep link, the app is not installed, and `deeplinker.js` sends them to a store. Just
+    before it does, it calls `POST /dl/click`. After the install, the app calls `POST /dl/match` on its first launch
+    and opens the URL it gets back.
+
+    **Android** gets the URL from the Play Install Referrer: `deeplinker.js` puts the full original URL, URL-encoded,
+    in the `referrer` parameter of the Play URL, and the app passes `InstallReferrerClient.getInstallReferrer()` as
+    `installReferrer`. That is deterministic. **iOS** has no such channel, so the server matches on the network
+    (IPv4 /24, IPv6 /48), OS major version, device class and language, and says so with `"match": "probabilistic"`.
+    Treat a probabilistic result as a hint. An opt-in clipboard method is described on `MatchRequest.clipboard`.
+
+    **What is kept** (for `ttlSeconds`, default one hour, and deleted when matched): the URL, an IP prefix, the OS,
+    its major version, the device class and the primary language. Not the address, not the user agent, no cookies.
+
+    The paths are relative to the `deferred.basePath` you configure (default `/dl`); the last segment decides.
+servers:
+  - url: https://example.com
+    description: "Your own site. There is no hosted service."
+paths:
+  /dl/click:
+    post:
+      operationId: recordClick
+      summary: Remember a click that is about to land in an app store.
+      description: |
+        Called by `deeplinker.js` with `navigator.sendBeacon` (so the body is usually `text/plain` JSON). Any client may
+        call it; the URL must be on one of your own hosts. When the request's network address cannot be determined
+        nothing is stored, and the answer is still 204.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ClickRequest" }
+          text/plain:
+            schema: { $ref: "#/components/schemas/ClickRequest" }
+      responses:
+        "204": { description: Accepted. No body. }
+        "400": { $ref: "#/components/responses/Error" }
+        "405": { $ref: "#/components/responses/Error" }
+        "413": { $ref: "#/components/responses/Error" }
+        "500": { $ref: "#/components/responses/Error" }
+  /dl/match:
+    post:
+      operationId: matchInstall
+      summary: Ask for the URL a newly installed app should open. Call it once, on first launch.
+      description: |
+        The matched record is deleted. Always answers 200 with `"match": "none"` when nothing fits, so an app can
+        call it unconditionally.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/MatchRequest" }
+      responses:
+        "200":
+          description: The result.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/MatchResponse" }
+        "400": { $ref: "#/components/responses/Error" }
+        "405": { $ref: "#/components/responses/Error" }
+        "413": { $ref: "#/components/responses/Error" }
+        "500": { $ref: "#/components/responses/Error" }
+components:
+  responses:
+    Error:
+      description: The request was refused. `error` says why.
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/ErrorResponse" }
+  schemas:
+    ClickRequest:
+      type: object
+      required: [url]
+      properties:
+        url:
+          type: string
+          maxLength: 2048
+          description: The URL the visitor opened, exactly as in the address bar. Must be http(s) on one of your hosts.
+          example: https://example.com/property/42?a=1&a=2#top
+    MatchRequest:
+      type: object
+      properties:
+        platform:
+          type: string
+          enum: [ios, android, other]
+          description: Anything but `ios` or `android` always yields `none`.
+        osVersion:
+          type: string
+          example: "17.5.1"
+          description: Only the major version is compared.
+        deviceClass:
+          type: string
+          enum: [phone, tablet, desktop]
+        language:
+          type: string
+          example: en-GB
+          description: Only the primary subtag is compared.
+        installReferrer:
+          type: string
+          description: |
+            Android. The Play Install Referrer string. If it is a URL on one of your hosts it is returned as a deterministic
+            match. Google's documentation does not say whether the API returns the `referrer` value of the Play URL decoded or
+            still percent-encoded, so both are accepted: the string as it is, else decoded once.
+        clipboard:
+          type: string
+          description: |
+            Optional, and only honoured when the server has `deferred.clipboard` on. The text the app read from the
+            pasteboard, if it is a URL on one of your hosts. The page copies the URL only when the visitor taps a
+            store button. Reading the pasteboard makes iOS tell the user (a notice since iOS 14, a permission prompt since iOS 16, unless the user pressed a system paste control), so ask the user first and
+            do it once.
+    MatchResponse:
+      type: object
+      required: [match]
+      properties:
+        match:
+          type: string
+          enum: [deterministic, clipboard, probabilistic, none]
+        url:
+          type: string
+          description: Present unless `match` is `none`. Byte for byte what the visitor opened.
+        confidence:
+          type: number
+          minimum: 0
+          maximum: 1
+          description: Only with `probabilistic`.
+    ErrorResponse:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: string
+          enum: [invalid_json, invalid_url, too_large, method_not_allowed, not_found, server_error]

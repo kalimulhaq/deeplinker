@@ -1,0 +1,23 @@
+{
+  "name": "@deeplinker/generator",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "sideEffects": false,
+  "description": "Pure config -> files. No file system access, so the web generator can run it in a browser.",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "build": "node ../../scripts/embed-runtime.mjs",
+    "typecheck": "node ../../scripts/embed-runtime.mjs && tsc -p tsconfig.json && tsc -p test/tsconfig.json",
+    "test": "node ../../scripts/embed-runtime.mjs && vitest run"
+  },
+  "dependencies": {
+    "@deeplinker/core": "workspace:*",
+    "@deeplinker/deferred": "workspace:*"
+  },
+  "devDependencies": {
+    "@deeplinker/runtime": "workspace:*"
+  }
+}

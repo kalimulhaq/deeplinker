@@ -1,0 +1,111 @@
+{
+  "domains": ["www.example.com", "m.example.com"],
+  "paths": [
+    "/property/*",
+    "/listing/*",
+    "/search?ref=*",
+    "/promo/*#open",
+    "!/admin/*",
+    "!/property/*/print",
+    "!/*#no_universal_links"
+  ],
+  "apps": {
+    "ios": {
+      "appIds": ["K7ZP4W2Q9X.com.example.app"],
+      "storeUrl": "https://apps.apple.com/app/id123456789",
+      "appClip": "K7ZP4W2Q9X.com.example.app.Clip"
+    },
+    "android": {
+      "packageName": "com.example.app",
+      "sha256CertFingerprints": [
+        "A1:B2:C3:D4:E5:F6:07:18:29:3A:4B:5C:6D:7E:8F:90:A1:B2:C3:D4:E5:F6:07:18:29:3A:4B:5C:6D:7E:8F:90"
+      ],
+      "scheme": "exampleapp",
+      "stores": {
+        "huawei": "https://appgallery.huawei.com/app/C123456789",
+        "samsung": "https://galaxystore.samsung.com/detail/com.example.app",
+        "amazon": "https://www.amazon.com/gp/mas/dl/android?p=com.example.app",
+        "xiaomi": "https://global.app.mi.com/details?id=com.example.app",
+        "google": "https://play.google.com/store/apps/details?id=com.example.app"
+      },
+      "otherApps": [
+        {
+          "packageName": "com.example.app.beta",
+          "sha256CertFingerprints": [
+            "0F:1E:2D:3C:4B:5A:69:78:87:96:A5:B4:C3:D2:E1:F0:0F:1E:2D:3C:4B:5A:69:78:87:96:A5:B4:C3:D2:E1:F0"
+          ]
+        }
+      ],
+      "dynamicAppLinkComponents": true
+    },
+    "macos": {
+      "appIds": ["K7ZP4W2Q9X.com.example.mac"],
+      "storeUrl": "https://apps.apple.com/app/id987654321",
+      "downloadUrl": "https://www.example.com/download/mac"
+    },
+    "windows": {
+      "packageFamilyName": "Example.App_abc123xyz",
+      "storeUrl": "ms-windows-store://pdp/?ProductId=9NBLGGH4NNS1",
+      "downloadUrl": "https://www.example.com/download/windows",
+      "allowSubdomains": true
+    },
+    "linux": {
+      "scheme": "exampleapp",
+      "stores": {
+        "flathub": "https://flathub.org/apps/com.example.app",
+        "snap": "https://snapcraft.io/example-app"
+      },
+      "downloadUrl": "https://www.example.com/download/linux"
+    },
+    "chromeos": {
+      "useAndroidApp": true
+    }
+  },
+  "web": {
+    "url": "https://app.example.com",
+    "routes": [
+      {
+        "from": "/property/:id",
+        "to": "/p/:id"
+      },
+      {
+        "from": "/property/:propertyId/leads?id=:leadId",
+        "to": "/property/leads?lead=:leadId&p=:propertyId"
+      },
+      {
+        "from": "/files/*",
+        "to": "/downloads/*"
+      },
+      {
+        "from": "/app?lead=:id",
+        "to": "/applicants#:id"
+      },
+      {
+        "from": "/app",
+        "to": null
+      }
+    ],
+    "pwa": {
+      "manifestPath": "/manifest.json",
+      "handleLinks": "preferred",
+      "preferRelatedApplications": false
+    }
+  },
+  "behavior": {
+    "redirect": true,
+    "redirectDelayMs": 0,
+    "redirectInAppBrowsers": false,
+    "redirectBots": false,
+    "skipParam": "dl_skip"
+  },
+  "deferred": {
+    "enabled": true,
+    "ttlSeconds": 3600,
+    "basePath": "/dl",
+    "storage": "redis",
+    "clipboard": false
+  },
+  "hosting": "vercel",
+  "outDir": "deeplinker-dist",
+  "debug": false
+}
