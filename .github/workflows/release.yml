@@ -15,12 +15,13 @@ jobs:
     uses: ./.github/workflows/ci.yml
 
   npm:
-    name: Publish @kalimulhaq/deeplinker to npm
+    name: Stage @kalimulhaq/deeplinker on npm
     needs: test
     runs-on: ubuntu-24.04
     permissions:
       contents: read
       # npm trusted publishing: npm checks this workflow's identity instead of a stored token, and adds provenance.
+      # The package allows this workflow to stage a release only; a maintainer approves it on npm with 2FA.
       id-token: write
     steps:
       - uses: actions/checkout@v4
@@ -30,19 +31,20 @@ jobs:
           node-version: 24
           cache: pnpm
           registry-url: https://registry.npmjs.org
-      # Trusted publishing needs npm 11.5.1 or newer.
-      - run: npm install -g npm@^11.5.1
+      # Staged publishing needs npm 11.15.0 or newer.
+      - run: npm install -g npm@^11.15.0
       - run: node scripts/release-notes.mjs "$GITHUB_REF_NAME" > /dev/null
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
-      - name: Publish, unless this version is already on npm
+      - name: Stage for approval, unless this version is already on npm
         working-directory: packages/deeplinker
         run: |
           VERSION=$(node -p "require('./package.json').version")
           if npm view "@kalimulhaq/deeplinker@$VERSION" version > /dev/null 2>&1; then
             echo "@kalimulhaq/deeplinker@$VERSION is already on npm; nothing to publish."
           else
-            npm publish --access public
+            npm stage publish --access public
+            echo "::notice::@kalimulhaq/deeplinker@$VERSION is staged. Approve it on npmjs.com (Staged Packages) or with: npm stage list, then npm stage approve <id>"
           fi
 
   github:

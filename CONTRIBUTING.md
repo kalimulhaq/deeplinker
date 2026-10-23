@@ -81,6 +81,8 @@ Only `@kalimulhaq/deeplinker` is published; the other packages are bundled into 
 2. `pnpm release:check v0.2.0` says whether the version and the changelog agree.
 3. Commit, then tag and push: `git tag v0.2.0 && git push origin main v0.2.0`.
 
-The `Release` workflow then runs every CI check, publishes to npm through npm trusted publishing (no token is stored; npm adds provenance), creates the GitHub Release from the changelog section, and deploys the web generator to GitHub Pages. If any check fails, nothing is published.
+The `Release` workflow then runs every CI check, stages the version on npm through npm trusted publishing (no token is stored; npm adds provenance), creates the GitHub Release from the changelog section, and deploys the web generator to GitHub Pages. If any check fails, nothing is published.
+
+4. Approve the staged version: npmjs.com → the package → Staged Packages, or `npm stage list` and `npm stage approve <id>` (npm 11.15 or newer). It asks for your two-factor code. Until then the new version is not installable.
 
 By contributing you agree that your contribution is licensed under the MIT license.

@@ -1,7 +1,17 @@
+<p align="center">
+  <img src="https://raw.githubusercontent.com/kalimulhaq/deeplinker/main/.github/assets/banner.png" alt="Deeplinker: one link opens your app, sends people to the right app store, falls back to your web app, or stays on the page" width="100%" />
+</p>
+
 # Deeplinker
 
-[![npm](https://img.shields.io/npm/v/@kalimulhaq/deeplinker.svg?style=flat-square)](https://www.npmjs.com/package/@kalimulhaq/deeplinker)
-[![CI](https://github.com/kalimulhaq/deeplinker/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/kalimulhaq/deeplinker/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/@kalimulhaq/deeplinker?style=flat-square&logo=npm&color=cb3837)](https://www.npmjs.com/package/@kalimulhaq/deeplinker)
+[![Downloads](https://img.shields.io/npm/dm/@kalimulhaq/deeplinker?style=flat-square&label=downloads)](https://www.npmjs.com/package/@kalimulhaq/deeplinker)
+[![CI](https://img.shields.io/github/actions/workflow/status/kalimulhaq/deeplinker/ci.yml?branch=main&style=flat-square&label=CI&logo=github)](https://github.com/kalimulhaq/deeplinker/actions/workflows/ci.yml)
+[![Node](https://img.shields.io/node/v/@kalimulhaq/deeplinker?style=flat-square&logo=nodedotjs&logoColor=white)](https://nodejs.org)
+[![Types](https://img.shields.io/npm/types/@kalimulhaq/deeplinker?style=flat-square&logo=typescript&logoColor=white)](https://www.npmjs.com/package/@kalimulhaq/deeplinker)
+[![deeplinker.js size](https://img.shields.io/badge/deeplinker.js-under%206%20KB%20gzip-2ea44f?style=flat-square)](#the-browser-script)
+[![Browser dependencies](https://img.shields.io/badge/browser%20dependencies-0-2ea44f?style=flat-square)](#the-browser-script)
+[![GitHub stars](https://img.shields.io/github/stars/kalimulhaq/deeplinker?style=flat-square&logo=github)](https://github.com/kalimulhaq/deeplinker/stargazers)
 [![License](https://img.shields.io/github/license/kalimulhaq/deeplinker?style=flat-square)](LICENSE)
 
 Turn any page on your website into a deep link. After one config file and one build, a normal `https://` URL on your site:

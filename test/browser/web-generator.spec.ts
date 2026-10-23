@@ -58,26 +58,42 @@ async function open(page: Page) {
   page.on("pageerror", (e) => problems.push(e.message));
   await page.goto(origin);
   const violations = () => page.evaluate(() => (window as unknown as { __csp: string[] }).__csp);
-  return { requests, problems, violations };
+  const engine = page.context().browser()?.browserType().name();
+  /**
+   * What the page did wrong: Content-Security-Policy violations and console errors. One exception, and only in
+   * WebKit: it reports its own styling of a <select> control as an inline style the page's policy refuses, once per
+   * <select>, with a matching console message. The page sets no style there, and the controls work.
+   */
+  const faults = async () => {
+    const all = await violations();
+    const isQuirk = (v: string) => engine === "webkit" && /^style-src-attr: inline .* on <select /.test(v);
+    let quirks = all.filter(isQuirk).length;
+    return {
+      violations: all.filter((v) => !isQuirk(v)),
+      problems: problems.filter(
+        (p) => !(quirks > 0 && p.startsWith("Refused to apply a stylesheet") && quirks--),
+      ),
+    };
+  };
+  return { requests, faults };
 }
 
 const fileButtons = (page: Page) => page.locator("#files button");
 
 test.describe("the web generator", () => {
   test("starts empty, asks for nothing from the network, and has no console errors", async ({ page }) => {
-    const { requests, problems, violations } = await open(page);
+    const { requests, faults } = await open(page);
     await expect(page.getByRole("heading", { name: "Deep link generator" })).toBeVisible();
     await expect(page.getByText("Add a domain and at least one app")).toBeVisible();
     await expect(page.getByRole("button", { name: "Download ZIP" })).toBeDisabled();
     expect(requests.every((url) => url.startsWith(origin))).toBe(true);
-    expect(await violations()).toEqual([]);
-    expect(problems).toEqual([]);
+    expect(await faults()).toEqual({ violations: [], problems: [] });
   });
 
   test("filling in the form produces the files, and the ZIP holds them under deeplinker-dist/", async ({
     page,
   }) => {
-    const { requests, problems, violations } = await open(page);
+    const { requests, faults } = await open(page);
     await page.getByLabel("Domains", { exact: true }).fill("example.com");
     await page.getByLabel("App ID").fill("K7ZP4W2Q9X.com.example.app");
     await page.getByLabel("App Store link").fill("https://apps.apple.com/app/id123456789");
@@ -109,8 +125,7 @@ test.describe("the web generator", () => {
     expect(aasa.applinks.details[0].appIDs).toEqual(["K7ZP4W2Q9X.com.example.app"]);
 
     expect(requests.every((url) => url.startsWith(origin) || url.startsWith("blob:"))).toBe(true);
-    expect(await violations()).toEqual([]);
-    expect(problems).toEqual([]);
+    expect(await faults()).toEqual({ violations: [], problems: [] });
   });
 
   test("the example fills the form and the JSON, and selecting a file previews it", async ({ page }) => {
