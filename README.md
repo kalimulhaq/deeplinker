@@ -21,8 +21,8 @@ npx deeplinker build    # writes everything to deploy into deeplinker-dist/
 npx deeplinker verify https://example.com
 ```
 
-- [How it decides](#how-it-decides)
 - [Quick start](#quick-start)
+- [How it decides](#how-it-decides)
 - [What `build` writes](#what-build-writes)
 - [Web generator](#web-generator)
 - [Configuration reference](#configuration-reference)
@@ -38,25 +38,6 @@ npx deeplinker verify https://example.com
 Requires Node.js 22.12 or newer to run the CLI. The browser script has no dependencies and runs in any browser from the ES2015 era onwards.
 
 ---
-
-## How it decides
-
-When someone opens a URL that matches your `paths`:
-
-|        | Visitor                                                  | What happens                                                                                                                                                                                                                                                                          |
-| ------ | -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **A1** | Phone or tablet, app installed                           | The **operating system** opens the app with the full URL (Universal Links / App Links). No JavaScript runs.                                                                                                                                                                           |
-| **A2** | Phone or tablet, app not installed                       | The page loads, so the OS did not open the app: they go to the **store for their device** (App Store, Google Play, Huawei AppGallery, Samsung Galaxy Store, Amazon Appstore, Xiaomi GetApps).                                                                                         |
-| **A3** | Phone or tablet, no app for their platform               | Rule C.                                                                                                                                                                                                                                                                               |
-| **B1** | Desktop (macOS, Windows, Linux, ChromeOS), app installed | The OS opens the app.                                                                                                                                                                                                                                                                 |
-| **B2** | Desktop, app not installed                               | The page cannot tell this apart from B1 (desktop browsers keep links in the browser even when the app is installed), so a desktop visitor is **never sent to a store automatically**: they go to the web app (rule C1), or stay with the store link announced for your page to offer. |
-| **B3** | Desktop, no desktop app                                  | Rule C.                                                                                                                                                                                                                                                                               |
-| **C1** | A web app is configured                                  | They go to the **web app**, with your `routes` applied and the query and hash kept byte for byte.                                                                                                                                                                                     |
-| **C2** | No web app                                               | They **stay on the page**. No redirect, no error.                                                                                                                                                                                                                                     |
-
-The design rests on one fact: if the page loaded at all, the OS did not open the app. That is true for most links on mobile, but not everywhere. Read [Platform limits](#platform-limits-read-this): on some platforms the page cannot know whether the app is installed, and the script never guesses.
-
-What the script will **never** do: redirect a crawler, redirect twice (a loop guard is set before every redirect), drop, reorder or re-encode a query parameter, set a cookie, run analytics, or call any server other than your own.
 
 ## Quick start
 
@@ -112,6 +93,25 @@ Upload as described in `deeplinker-dist/README-DEPLOY.md`, which is written for 
 npx deeplinker verify https://example.com
 npx deeplinker app-snippets      # the setup each app needs
 ```
+
+## How it decides
+
+When someone opens a URL that matches your `paths`:
+
+|        | Visitor                                                  | What happens                                                                                                                                                                                                                                                                          |
+| ------ | -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **A1** | Phone or tablet, app installed                           | The **operating system** opens the app with the full URL (Universal Links / App Links). No JavaScript runs.                                                                                                                                                                           |
+| **A2** | Phone or tablet, app not installed                       | The page loads, so the OS did not open the app: they go to the **store for their device** (App Store, Google Play, Huawei AppGallery, Samsung Galaxy Store, Amazon Appstore, Xiaomi GetApps).                                                                                         |
+| **A3** | Phone or tablet, no app for their platform               | Rule C.                                                                                                                                                                                                                                                                               |
+| **B1** | Desktop (macOS, Windows, Linux, ChromeOS), app installed | The OS opens the app.                                                                                                                                                                                                                                                                 |
+| **B2** | Desktop, app not installed                               | The page cannot tell this apart from B1 (desktop browsers keep links in the browser even when the app is installed), so a desktop visitor is **never sent to a store automatically**: they go to the web app (rule C1), or stay with the store link announced for your page to offer. |
+| **B3** | Desktop, no desktop app                                  | Rule C.                                                                                                                                                                                                                                                                               |
+| **C1** | A web app is configured                                  | They go to the **web app**, with your `routes` applied and the query and hash kept byte for byte.                                                                                                                                                                                     |
+| **C2** | No web app                                               | They **stay on the page**. No redirect, no error.                                                                                                                                                                                                                                     |
+
+The design rests on one fact: if the page loaded at all, the OS did not open the app. That is true for most links on mobile, but not everywhere. Read [Platform limits](#platform-limits-read-this): on some platforms the page cannot know whether the app is installed, and the script never guesses.
+
+What the script will **never** do: redirect a crawler, redirect twice (a loop guard is set before every redirect), drop, reorder or re-encode a query parameter, set a cookie, run analytics, or call any server other than your own.
 
 ## What `build` writes
 
