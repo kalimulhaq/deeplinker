@@ -4,9 +4,11 @@ All notable changes to `@kalimulhaq/deeplinker` are documented in this file. The
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-10-23
+
 ### Changed
 
-- README: the quick start comes first, under a new banner, with badges for the version, downloads, CI, Node, types, the size of `deeplinker.js`, stars and license.
+- README: a new opening that lists what Deeplinker does and everything it supports (platforms, link standards, app stores, hosts, in-app browsers, deferred deep linking), then the quick start, under a new banner with badges for the version, downloads, CI, Node, types, the size of `deeplinker.js`, stars and license.
 
 ## [0.1.0] - 2026-10-23
 

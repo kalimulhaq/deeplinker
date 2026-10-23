@@ -1,6 +1,6 @@
 {
   "name": "@kalimulhaq/deeplinker",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Turn any page on your site into a deep link: it opens your app, sends people to the right app store, falls back to a web app, or stays put.",
   "keywords": [
     "deep-link",
