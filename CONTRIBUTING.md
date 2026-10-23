@@ -12,7 +12,7 @@ pnpm test                # unit tests for every package
 pnpm lint && pnpm typecheck
 ```
 
-Requires Node.js 18 or newer. Run a single package's tests with `pnpm --filter @deeplinker/core test`; for one file, `cd packages/core && pnpm exec vitest run test/detect.test.ts`.
+Requires Node.js 22.12 or newer. Run a single package's tests with `pnpm --filter @deeplinker/core test`; for one file, `cd packages/core && pnpm exec vitest run test/detect.test.ts`.
 
 Other checks:
 

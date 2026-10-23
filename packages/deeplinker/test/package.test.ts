@@ -24,7 +24,7 @@ describe("package.json", () => {
     expect(pkg.publishConfig).toEqual({ access: "public" });
     expect(pkg.repository.url).toBe("git+https://github.com/kalimulhaq/deeplinker.git");
     expect(pkg.homepage).toContain("github.com/kalimulhaq/deeplinker");
-    expect(pkg.engines.node).toBe(">=18");
+    expect(pkg.engines.node).toBe(">=22.12");
   });
 
   it("depends only on third-party packages: the workspaces are bundled in", () => {

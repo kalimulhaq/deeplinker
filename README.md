@@ -35,7 +35,7 @@ npx deeplinker verify https://example.com
 - [Testing on real devices](#testing-on-real-devices)
 - [Contributing](#contributing) · [License](#license)
 
-Requires Node.js 18 or newer to run the CLI. The browser script has no dependencies and runs in any browser from the ES2015 era onwards.
+Requires Node.js 22.12 or newer to run the CLI. The browser script has no dependencies and runs in any browser from the ES2015 era onwards.
 
 ---
 

@@ -127,8 +127,8 @@ try {
     let deferredPort = 0;
     const endpoint = join(dist, "deferred/node/server.mjs");
     if (existsSync(endpoint)) {
-      if (Number(process.versions.node.split(".")[0]) < 20) {
-        record("deferred endpoint (needs Node 20+)", true, "skipped on this Node version");
+      if (Number(process.versions.node.split(".")[0]) < 22) {
+        record("deferred endpoint (needs Node 22+)", true, "skipped on this Node version");
       } else {
         deferredPort = await freePort();
         let log = "";

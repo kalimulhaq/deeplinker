@@ -283,10 +283,10 @@ export function renderDeferred(input: DeferredInput): DeferredOutput {
         path: `${dir}/server.mjs`,
         content: `${header}\nimport { createServer } from "node:http";\n${imports([`import { createHandler, toNodeListener, ${factory} } from ${KIT};`])}\n\nconst settings = ${settings};\n\n${store?.setup.join("\n") ?? ""}\n\nconst handle = createHandler({\n  settings,\n  store,\n  ip: (r) => r.headers.get("x-forwarded-for")?.split(",")[0]?.trim(),\n});\n\nconst port = Number(process.env.PORT ?? 3100);\ncreateServer(toNodeListener(handle)).listen(port, "127.0.0.1", () => console.log(\`deferred deep linking on 127.0.0.1:\${port}\`));\n`,
         description: "Deferred deep linking endpoint (Node server)",
-        destination: "anywhere you can run Node 20+; proxy the deferred paths to it",
+        destination: "anywhere you can run Node 22+; proxy the deferred paths to it",
       });
       out.steps.push(
-        "Run `deferred/node/server.mjs` with Node 20 or newer, with the packages listed under dependencies installed next to it.",
+        "Run `deferred/node/server.mjs` with Node 22 or newer, with the packages listed under dependencies installed next to it.",
         `Proxy \`${base}/click\` and \`${base}/match\` from your web server to it (the nginx snippet is in the generated \`nginx-deeplinker.conf\`). It listens on 127.0.0.1 only.`,
       );
       break;
