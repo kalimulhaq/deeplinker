@@ -55,11 +55,17 @@ jobs:
 
   browsers:
     name: Browser tests (${{ matrix.project }})
-    # Pinned: Playwright supports this release, and on newer images installing WebKit's and Firefox's system
-    # libraries can take longer than the tests themselves.
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     needs: check
+    # Playwright's own image has every browser and the system libraries they need already installed, so nothing is
+    # downloaded from the Ubuntu package mirror (which can take longer than the tests). Keep its tag equal to the
+    # @playwright/test version in pnpm-lock.yaml: a mismatch fails with "Executable doesn't exist".
+    container:
+      image: mcr.microsoft.com/playwright:v1.64.1-noble
+    env:
+      # Firefox will not start when $HOME belongs to another user; in the container we run as root.
+      HOME: /root
     strategy:
       fail-fast: false
       matrix:
@@ -73,5 +79,4 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
-      - run: pnpm exec playwright install --with-deps ${{ matrix.project == 'chromium-android' && 'chromium' || matrix.project == 'webkit-iphone' && 'webkit' || 'firefox' }}
       - run: pnpm test:browser --project=${{ matrix.project }}
