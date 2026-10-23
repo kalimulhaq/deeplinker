@@ -20,10 +20,10 @@ Turn any page on your website into a deep link. You write one config file, run o
 
 When someone opens your link, Deeplinker:
 
-- **opens your app** on the same page, with the path, every query parameter and the hash, if they have it;
-- **sends them to the right store** for their device if they don't, and can hand the page to the app after the install (deferred deep linking);
-- **opens your web app** on the matching page, following your routing rules, if there is no app for their device;
-- **leaves them on the page**, untouched, if there is nowhere better to go.
+- **Opens your app** on the same page, with the path, every query parameter and the hash, if they have it.
+- **Sends them to the right store** for their device if they don't, and can hand the page to the app after the install (deferred deep linking).
+- **Opens your web app** on the matching page, following your routing rules, if there is no app for their device.
+- **Leaves them on the page**, untouched, if there is nowhere better to go.
 
 It also **writes every file** the platforms ask for, **checks your live site** (`deeplinker verify`), and **prints the setup each app needs** (entitlements, intent filters, manifest entries).
 
