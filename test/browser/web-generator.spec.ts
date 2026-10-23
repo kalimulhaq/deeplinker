@@ -43,7 +43,10 @@ async function open(page: Page) {
     const seen: string[] = [];
     (window as unknown as { __csp: string[] }).__csp = seen;
     document.addEventListener("securitypolicyviolation", (e) =>
-      seen.push(`${e.violatedDirective}: ${e.blockedURI}`),
+      seen.push(
+        `${e.violatedDirective}: ${e.blockedURI || "inline"} at ${e.sourceFile || "?"}:${e.lineNumber}` +
+          (e.sample ? ` "${e.sample}"` : ""),
+      ),
     );
   });
   page.on("request", (r) => requests.push(r.url()));
@@ -65,8 +68,8 @@ test.describe("the web generator", () => {
     await expect(page.getByText("Add a domain and at least one app")).toBeVisible();
     await expect(page.getByRole("button", { name: "Download ZIP" })).toBeDisabled();
     expect(requests.every((url) => url.startsWith(origin))).toBe(true);
-    expect(problems).toEqual([]);
     expect(await violations()).toEqual([]);
+    expect(problems).toEqual([]);
   });
 
   test("filling in the form produces the files, and the ZIP holds them under deeplinker-dist/", async ({
@@ -104,8 +107,8 @@ test.describe("the web generator", () => {
     expect(aasa.applinks.details[0].appIDs).toEqual(["K7ZP4W2Q9X.com.example.app"]);
 
     expect(requests.every((url) => url.startsWith(origin) || url.startsWith("blob:"))).toBe(true);
-    expect(problems).toEqual([]);
     expect(await violations()).toEqual([]);
+    expect(problems).toEqual([]);
   });
 
   test("the example fills the form and the JSON, and selecting a file previews it", async ({ page }) => {
