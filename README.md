@@ -14,14 +14,30 @@
 [![GitHub stars](https://img.shields.io/github/stars/kalimulhaq/deeplinker?style=flat-square&logo=github)](https://github.com/kalimulhaq/deeplinker/stargazers)
 [![License](https://img.shields.io/github/license/kalimulhaq/deeplinker?style=flat-square)](LICENSE)
 
-Turn any page on your website into a deep link. After one config file and one build, a normal `https://` URL on your site:
+Turn any page on your website into a deep link. You write one config file, run one build and upload the result; from then on, a normal `https://` link to your site does the right thing on every device.
 
-- **opens your app** with the full URL (path, every query parameter, hash) if it is installed,
-- **sends people to the right app store** for their device if it is not,
-- **falls back to your web app** (same path, query and hash) if there is no app for their platform,
-- or **stays where it is** if there is nowhere to go.
+### What it does
 
-It works with Universal Links (iOS, iPadOS, macOS), App Links (Android, ChromeOS), Windows web-to-app linking and `intent://`, and it needs no paid service and no account.
+When someone opens your link, Deeplinker:
+
+- **opens your app** on the same page, with the path, every query parameter and the hash, if they have it;
+- **sends them to the right store** for their device if they don't, and can hand the page to the app after the install (deferred deep linking);
+- **opens your web app** on the matching page, following your routing rules, if there is no app for their device;
+- **leaves them on the page**, untouched, if there is nowhere better to go.
+
+It also **writes every file** the platforms ask for, **checks your live site** (`deeplinker verify`), and **prints the setup each app needs** (entitlements, intent filters, manifest entries).
+
+### What it supports
+
+- **Platforms:** iOS · iPadOS · Android · macOS · Windows · ChromeOS · Linux · HarmonyOS
+- **Link standards:** Apple Universal Links · Android App Links, including Android 15 dynamic rules · Windows web-to-app links · Chrome `intent://` · web app manifest `related_applications`
+- **App stores:** App Store · Mac App Store · Google Play · Huawei AppGallery · Samsung Galaxy Store · Amazon Appstore · Xiaomi GetApps · Microsoft Store · Flathub · Snap Store · your own download page
+- **Hosting:** Apache · nginx · Vercel · Netlify · Cloudflare Pages · Laravel · WordPress · any static host
+- **In-app browsers:** Instagram · Facebook · Messenger · LinkedIn · X · TikTok · Snapchat · WeChat · LINE · Telegram · Gmail · Google app, detected, with a way out offered to the visitor
+- **Deferred deep linking:** endpoints for Node, Vercel, Netlify, Cloudflare and PHP · clicks kept in memory, SQLite, PostgreSQL, Redis or Cloudflare KV
+- **Tools:** a CLI (`init`, `build`, `verify`, `app-snippets`) · a [web generator](https://kalimulhaq.github.io/deeplinker/) for sites without Node
+
+**No paid service, no account, no cookies, no tracking.** The browser script, `deeplinker.js`, is under 6 KB gzipped, has no dependencies, and never adds anything to your page.
 
 ```sh
 npm i -D @kalimulhaq/deeplinker
