@@ -22,7 +22,7 @@
     "directory": "packages/deeplinker"
   },
   "bin": {
-    "deeplinker": "./bin/deeplinker.js"
+    "deeplinker": "bin/deeplinker.js"
   },
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
