@@ -17,7 +17,8 @@ concurrency:
 jobs:
   check:
     name: Lint, types, tests, build, size
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
     strategy:
       matrix:
         node: [22, 24]
@@ -38,7 +39,8 @@ jobs:
 
   examples:
     name: Examples end to end
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
     needs: check
     steps:
       - uses: actions/checkout@v4
@@ -53,7 +55,10 @@ jobs:
 
   browsers:
     name: Browser tests (${{ matrix.project }})
-    runs-on: ubuntu-latest
+    # Pinned: Playwright supports this release, and on newer images installing WebKit's and Firefox's system
+    # libraries can take longer than the tests themselves.
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
     needs: check
     strategy:
       fail-fast: false

@@ -17,7 +17,7 @@ jobs:
   npm:
     name: Publish @kalimulhaq/deeplinker to npm
     needs: test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
       # npm trusted publishing: npm checks this workflow's identity instead of a stored token, and adds provenance.
@@ -48,7 +48,7 @@ jobs:
   github:
     name: GitHub Release
     needs: npm
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: write
     steps:
@@ -62,7 +62,7 @@ jobs:
   pages:
     name: Web generator on GitHub Pages
     needs: npm
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
       pages: write
