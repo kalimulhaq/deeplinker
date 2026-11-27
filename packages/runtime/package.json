@@ -16,6 +16,6 @@
   },
   "devDependencies": {
     "@deeplinker/core": "workspace:*",
-    "terser": "^5.51.2"
+    "terser": "^5.51.4"
   }
 }
